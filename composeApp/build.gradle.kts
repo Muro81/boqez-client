@@ -1,3 +1,4 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,6 +7,25 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.buildkonfig)
+}
+
+buildkonfig {
+    packageName = "com.lmuro.boqez"
+
+    defaultConfigs{
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+    }
+
+    defaultConfigs("dev") {
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+    }
+    defaultConfigs("test") {
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+    }
+    defaultConfigs("prod") {
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+    }
 }
 
 kotlin {
@@ -14,7 +34,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -24,7 +44,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)

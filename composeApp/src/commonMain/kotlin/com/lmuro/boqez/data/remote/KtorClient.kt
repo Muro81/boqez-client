@@ -1,5 +1,6 @@
 package com.lmuro.boqez.data.remote
 
+import com.lmuro.boqez.BuildKonfig
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -49,7 +50,7 @@ fun provideKtorClient(
             exponentialDelay()
         }
         defaultRequest {
-            url("https://api.example.com/") // Your base URL
+            url(BuildKonfig.BASE_URL) // Your base URL
             // You can also set default headers here
             header("Content-Type", "application/json")
         }
