@@ -24,7 +24,7 @@ fun BaseContentView(
     state: BaseState,
     topBar : @Composable () -> Unit = {},
     fab : @Composable () -> Unit = {},
-    content : @Composable (BaseState) -> Unit
+    content : @Composable () -> Unit
 ){
     val focusManager = LocalFocusManager.current
 
@@ -47,7 +47,7 @@ fun BaseContentView(
                 .fillMaxSize()
                 .padding(innerPadding)
         ){
-            content(state)
+            content()
             if(state.isLoading){
                 Box(modifier = Modifier.fillMaxSize().background(Color.White)){
                     CircularProgressIndicator(

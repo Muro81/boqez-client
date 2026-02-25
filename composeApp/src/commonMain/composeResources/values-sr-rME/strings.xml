@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Boqez</string>
+    <string name="english">Engleski</string>
+    <string name="montenegrin">Crnogorski</string>
+
+    <!-- Errors -->
+
+    <string name="email">Email</string>
+    <string name="password">Lozinka</string>
+    <string name="forgot_password">Zaboravljena lozinka?</string>
+    <string name="hint_email">Unesite email:</string>
+    <string name="hint_password">Unesite lozinku:</string>
+    <string name="login">Uloguj se</string>
+    <string name="username">Korisnicko ime</string>
+    <string name="hint_username">Unesite korisnicko ime:</string>
+    <string name="sign_up">Prijavi se</string>
+    <string name="or">Or</string>
+</resources>

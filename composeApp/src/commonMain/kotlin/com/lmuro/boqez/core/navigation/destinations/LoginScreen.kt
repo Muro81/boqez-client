@@ -6,11 +6,13 @@ import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.presentation.login.LoginScreen
 
 fun NavGraphBuilder.loginComposable(
-    showSnackBar : (String) -> Unit
+    showSnackBar : (String) -> Unit,
+    switchLanguage : (String) -> Unit
 ){
     composable<Screen.LoginScreen> {
         LoginScreen(
-            showSnackBar = showSnackBar
+            showSnackBar = showSnackBar,
+            switchLanguage = switchLanguage
         )
     }
 }

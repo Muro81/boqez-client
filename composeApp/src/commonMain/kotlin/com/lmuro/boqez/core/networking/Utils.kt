@@ -3,7 +3,6 @@ package com.lmuro.boqez.core.networking
 import com.lmuro.boqez.data.remote.dto.ErrorResponseDto
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
-import kotlin.Error
 
 fun String.addParams(params: Map<String, String>): String {
     if (params.isEmpty()) return this

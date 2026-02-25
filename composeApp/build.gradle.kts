@@ -28,6 +28,10 @@ buildkonfig {
     }
 }
 
+compose.resources{
+    generateResClass = always
+}
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -88,6 +92,10 @@ kotlin {
 
             //Logging
             implementation(libs.napier)
+
+            //Datastore
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

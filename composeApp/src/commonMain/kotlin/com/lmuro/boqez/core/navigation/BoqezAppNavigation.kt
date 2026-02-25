@@ -14,7 +14,8 @@ fun BoqezAppNavigation(
     navController: NavHostController,
     navigator: Navigator,
     startDestination: Screen,
-    showSnackBar: (String) -> Unit
+    showSnackBar: (String) -> Unit,
+    switchLanguage : (String) -> Unit
 ) {
     ObserveAsEvents(flow = navigator.navigationFlow) { navType ->
         Napier.v("NAVTYPE $navType")
@@ -40,6 +41,6 @@ fun BoqezAppNavigation(
         startDestination = startDestination,
         navController = navController
     ) {
-        loginComposable(showSnackBar = showSnackBar)
+        loginComposable(showSnackBar = showSnackBar, switchLanguage = switchLanguage)
     }
 }
