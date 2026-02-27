@@ -14,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import com.lmuro.boqez.theme.BoqezThemeProvider
 
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
-    containerColor: Color = Color.Blue,
-    contentColor: Color = Color.Black,
+    containerColor: Color = BoqezThemeProvider.colors.primaryDarkest,
+    contentColor: Color = BoqezThemeProvider.colors.white,
     shape: Shape = RoundedCornerShape(8.dp),
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
@@ -29,8 +30,8 @@ fun PrimaryButton(
         onClick = onClick,
         colors = ButtonDefaults
             .buttonColors(
-                containerColor = if (isEnabled) containerColor else Color.LightGray,
-                contentColor = if (isEnabled) contentColor else Color.Gray
+                containerColor = if (isEnabled) containerColor else BoqezThemeProvider.colors.skyBase,
+                contentColor = if (isEnabled) contentColor else BoqezThemeProvider.colors.inkLighter
             ),
         shape = shape,
         enabled = isEnabled,

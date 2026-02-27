@@ -14,24 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import com.lmuro.boqez.core.utils.noRippleClickable
+import com.lmuro.boqez.theme.BoqezThemeProvider
 
 @Composable
 fun BaseContentView(
     modifier: Modifier = Modifier,
     state: BaseState,
-    topBar : @Composable () -> Unit = {},
-    fab : @Composable () -> Unit = {},
-    content : @Composable () -> Unit
-){
+    topBar: @Composable () -> Unit = {},
+    fab: @Composable () -> Unit = {},
+    content: @Composable () -> Unit
+) {
     val focusManager = LocalFocusManager.current
 
     val customModifier = remember {
         modifier
             .fillMaxSize()
-            .noRippleClickable{
+            .noRippleClickable {
                 focusManager.clearFocus()
             }
         //TODO add topbar and navigation bar handling
@@ -41,20 +41,20 @@ fun BaseContentView(
         modifier = customModifier,
         topBar = topBar,
         floatingActionButton = fab
-    ){ innerPadding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        ){
+        ) {
             content()
-            if(state.isLoading){
-                Box(modifier = Modifier.fillMaxSize().background(Color.White)){
+            if (state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize().background(BoqezThemeProvider.colors.white)) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(
                             alignment = Alignment.Center
                         ),
-                        color = Color.Black
+                        color = BoqezThemeProvider.colors.primaryBase
                     )
                 }
             }

@@ -16,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import boqez.composeapp.generated.resources.Res
@@ -34,6 +33,7 @@ import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.BoqezTextField
 import com.lmuro.boqez.presentation.components.PrimaryButton
+import com.lmuro.boqez.theme.BoqezThemeProvider
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -54,7 +54,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(BoqezThemeProvider.colors.white)
                 .padding(20.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
@@ -67,7 +67,9 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(Res.string.app_name)
+                    text = stringResource(Res.string.app_name),
+                    style = BoqezThemeProvider.typography.interBold32,
+                    color = BoqezThemeProvider.colors.primaryBase
                 )
             }
             BoqezTextField(
@@ -94,6 +96,8 @@ fun LoginScreen(
             Spacer(Modifier.height(20.dp))
             Text(
                 text = stringResource(Res.string.forgot_password),
+                color = BoqezThemeProvider.colors.inkBase,
+                style = BoqezThemeProvider.typography.interRegular14,
                 modifier = Modifier.noRippleClickable {
                     viewModel.onEvent(LoginEvent.OnForgotPasswordClick)
                 }
@@ -112,16 +116,21 @@ fun LoginScreen(
                     isEnabled = true
                 ) {
                     Text(
-                        text = stringResource(Res.string.login)
+                        text = stringResource(Res.string.login),
+                        style = BoqezThemeProvider.typography.interMedium16,
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = stringResource(Res.string.or)
+                    text = stringResource(Res.string.or),
+                    color = BoqezThemeProvider.colors.inkBase,
+                    style = BoqezThemeProvider.typography.interMedium14
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(Res.string.sign_up),
+                    color = BoqezThemeProvider.colors.primaryBase,
+                    style = BoqezThemeProvider.typography.interMedium16,
                     modifier = Modifier.noRippleClickable {
                         viewModel.onEvent(LoginEvent.OnSignUpClick)
                     }
