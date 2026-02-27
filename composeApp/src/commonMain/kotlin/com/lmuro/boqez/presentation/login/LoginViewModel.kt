@@ -1,10 +1,17 @@
 package com.lmuro.boqez.presentation.login
 
+import androidx.lifecycle.viewModelScope
+import com.lmuro.boqez.core.networking.onError
+import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.isValidEmail
+import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class LoginViewModel : BaseViewModel<LoginState, LoginEvent>() {
+class LoginViewModel(
+    private val repository: BoqezRepository
+) : BaseViewModel<LoginState, LoginEvent>() {
     override val initialState: LoginState = LoginState()
     override fun onEvent(event: LoginEvent) {
         when (event) {
@@ -55,6 +62,18 @@ class LoginViewModel : BaseViewModel<LoginState, LoginEvent>() {
     }
 
     private fun login() {
-        println("ALL GOOD")
+        viewModelScope.launch {
+            state.update { it.copy(isLoading = true) }
+            repository.login(
+                email = state.value.email,
+                password = state.value.password,
+                device = "test-device"
+            ).onSuccess {
+                _snackBarChannel.send("Success on login.")
+            }.onError { error, message ->
+                _snackBarChannel.send(message ?: error.toString())
+            }
+            state.update { it.copy(isLoading = false) }
+        }
     }
 }

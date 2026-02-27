@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ErrorResponseDto(
+data class DataResponse<T>(
+    @SerialName("data") val data : T,
     @SerialName("message") val message : String?
 )

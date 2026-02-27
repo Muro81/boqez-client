@@ -14,17 +14,17 @@ buildkonfig {
     packageName = "com.lmuro.boqez"
 
     defaultConfigs{
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
     }
 
     defaultConfigs("dev") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
     }
     defaultConfigs("test") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
     }
     defaultConfigs("prod") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "https://example.com")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
     }
 }
 
