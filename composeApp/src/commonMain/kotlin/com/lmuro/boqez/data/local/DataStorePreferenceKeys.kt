@@ -1,4 +1,4 @@
-package com.lmuro.boqez.core.utils
+package com.lmuro.boqez.data.local
 
 import androidx.datastore.preferences.core.stringPreferencesKey
 

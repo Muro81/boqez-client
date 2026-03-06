@@ -69,6 +69,7 @@ class LoginViewModel(
                 password = state.value.password,
                 device = "test-device"
             ).onSuccess {
+                //TODO add local storage token saving and then navigate
                 _snackBarChannel.send("Success on login.")
             }.onError { error, message ->
                 _snackBarChannel.send(message ?: error.toString())
