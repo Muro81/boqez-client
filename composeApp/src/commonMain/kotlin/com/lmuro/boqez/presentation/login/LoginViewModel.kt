@@ -4,13 +4,17 @@ import androidx.lifecycle.viewModelScope
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.isValidEmail
+import com.lmuro.boqez.data.local.DataStoreApi
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
 import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val repository: BoqezRepository
+    private val repository: BoqezRepository,
+    private val dataStoreApi: DataStoreApi
 ) : BaseViewModel<LoginState, LoginEvent>() {
     override val initialState: LoginState = LoginState()
     override fun onEvent(event: LoginEvent) {
@@ -68,9 +72,10 @@ class LoginViewModel(
                 email = state.value.email,
                 password = state.value.password,
                 device = "test-device"
-            ).onSuccess {
-                //TODO add local storage token saving and then navigate
-                _snackBarChannel.send("Success on login.")
+            ).onSuccess { result ->
+                dataStoreApi.update(ACCESS_TOKEN, result.accessToken)
+                dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
+                _snackBarChannel.send("Success on login. $ACCESS_TOKEN")
             }.onError { error, message ->
                 _snackBarChannel.send(message ?: error.toString())
             }
