@@ -2,9 +2,15 @@ package com.lmuro.boqez.data.remote
 
 import com.lmuro.boqez.BuildKonfig
 import com.lmuro.boqez.core.navigation.utils.Navigator
+import com.lmuro.boqez.data.local.DataStoreApi
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
+import com.lmuro.boqez.data.remote.dto.requests.RefreshTokenRequestDto
+import com.lmuro.boqez.data.remote.dto.response.AuthResponseDto
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
@@ -18,6 +24,9 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.pingInterval
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -25,7 +34,7 @@ import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
 fun provideKtorClient(
-//    localStorage : LocalStorageRepository,
+    dataStoreApi: DataStoreApi,
     navigator: Navigator
 ): HttpClient {
 
@@ -72,26 +81,28 @@ fun provideKtorClient(
                 loadTokens {
                     // Load your tokens here
                     BearerTokens(
-                        accessToken = "",//localStorage.getAccessToken(),
-                        refreshToken = ""//localStorage.getRefreshToken()
+                        accessToken = dataStoreApi.read(ACCESS_TOKEN).orEmpty(),
+                        refreshToken = dataStoreApi.read(REFRESH_TOKEN)
                     )
                 }
 
-//                refreshTokens {
-//                    // Equivalent to TokenRefreshAuthenticator
-//                    val newTokens = client.get {
-//                        markAsRefreshTokenRequest()
-//                        url("/refreshToken")
-//                        parameter(
-//                            "refresh_token",
-//                            ""//localStorage.getRefreshToken()
-//                        )
-//                    }.body<Token>()
-//                    BearerTokens(
-//                        accessToken = newTokens.accessToken,
-//                        refreshToken = newTokens.refreshToken
-//                    )
-//                }
+                refreshTokens {
+                    // Equivalent to TokenRefreshAuthenticator
+                    val newTokens = client.post {
+                        markAsRefreshTokenRequest()
+                        url("/auth/api/refresh")
+                        setBody(
+                            RefreshTokenRequestDto(
+                                token = dataStoreApi.read(REFRESH_TOKEN).orEmpty(),
+                                device = "test"
+                            )
+                        )
+                    }.body<AuthResponseDto>()
+                    BearerTokens(
+                        accessToken = newTokens.accessToken,
+                        refreshToken = newTokens.refreshToken
+                    )
+                }
             }
         }
     }

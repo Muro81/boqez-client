@@ -10,7 +10,7 @@ import org.koin.dsl.module
 expect val platformAppModule: Module
 
 val appModule = module {
-    single { provideKtorClient(get()) }
+    single { provideKtorClient(get(),get()) }
     single { ApiService(get()) }
     single<Navigator> { NavigatorImpl() }
     includes(platformAppModule)
