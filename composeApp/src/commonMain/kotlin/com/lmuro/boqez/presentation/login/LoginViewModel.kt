@@ -1,13 +1,10 @@
 package com.lmuro.boqez.presentation.login
 
 import androidx.lifecycle.viewModelScope
-import boqez.composeapp.generated.resources.Res
-import boqez.composeapp.generated.resources.error_field_required
-import boqez.composeapp.generated.resources.error_invalid_email
-import boqez.composeapp.generated.resources.error_password_min_lenght
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
-import com.lmuro.boqez.core.utils.isValidEmail
+import com.lmuro.boqez.core.utils.validateEmail
+import com.lmuro.boqez.core.utils.validatePasswordMin
 import com.lmuro.boqez.data.local.DataStoreApi
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
@@ -17,7 +14,6 @@ import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 
 class LoginViewModel(
     private val repository: BoqezRepository,
@@ -52,17 +48,9 @@ class LoginViewModel(
 
     private fun validateInputs() {
         viewModelScope.launch {
-            val emailError = when {
-                state.value.email.isBlank() -> getString(Res.string.error_field_required)
-                !state.value.email.isValidEmail() -> getString(Res.string.error_invalid_email)
-                else -> ""
-            }
+            val emailError = state.value.email.validateEmail()
 
-            val passwordError = when {
-                state.value.password.isBlank() -> getString(Res.string.error_field_required)
-                state.value.password.length !in 8..100 -> getString(Res.string.error_password_min_lenght)
-                else -> ""
-            }
+            val passwordError = state.value.password.validatePasswordMin()
 
             state.update { it.copy(emailError = emailError, passwordError = passwordError) }
 

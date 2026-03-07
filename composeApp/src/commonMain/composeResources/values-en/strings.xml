@@ -7,6 +7,12 @@
     <string name = "error_field_required">Field required.</string>
     <string name = "error_invalid_email">Invalid email format.</string>
     <string name = "error_password_min_lenght">Password must be at least 8 characters.</string>
+    <string name = "error_password_max_length">Password must be less than 100 characters.</string>
+    <string name = "error_password_no_numbers">Password must contain at least one number.</string>
+    <string name = "error_password_no_letter">Password must contain at least one letter.</string>
+    <string name = "error_password_no_special">Password must contain at least one special character.</string>
+    <string name = "error_min_4_char">Must be at least 4 characters.</string>
+    <string name = "error_passwords_no_match">Passwords must match.</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
