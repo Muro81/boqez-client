@@ -41,7 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     showSnackBar: (String) -> Unit,
-    switchLanguage: (String) -> Unit
+    switchLanguage: (String) -> Unit // TODO add logic and UI for lang switching
 ) {
     val state by viewModel.stateFlow.collectAsState()
     viewModel.snackBarChanel.ObserveWithLifecycle {

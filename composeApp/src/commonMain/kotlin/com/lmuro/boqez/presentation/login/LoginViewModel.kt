@@ -1,6 +1,8 @@
 package com.lmuro.boqez.presentation.login
 
 import androidx.lifecycle.viewModelScope
+import com.lmuro.boqez.core.navigation.Screen
+import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.validateEmail
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val repository: BoqezRepository,
-    private val dataStoreApi: DataStoreApi
+    private val dataStoreApi: DataStoreApi,
+    private val navigator: Navigator
 ) : BaseViewModel<LoginState, LoginEvent>() {
     override val initialState: LoginState = LoginState()
     override fun onEvent(event: LoginEvent) {
@@ -42,7 +45,13 @@ class LoginViewModel(
                 }
             }
 
-            LoginEvent.OnSignUpClick -> TODO()
+            LoginEvent.OnSignUpClick -> {
+                viewModelScope.launch {
+                    navigator.navigateTo(
+                        destination = Screen.RegisterScreen
+                    )
+                }
+            }
         }
     }
 
@@ -73,7 +82,12 @@ class LoginViewModel(
                 dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
                 _snackBarChannel.send("Success on login. $ACCESS_TOKEN")
             }.onError { error, message ->
-                _snackBarChannel.send(message ?: error.toString())
+                val decide = message ?: error.toString()
+                state.update {
+                    it.copy(
+                        passwordError = decide
+                    )
+                }
             }
             state.update { it.copy(isLoading = false) }
         }
