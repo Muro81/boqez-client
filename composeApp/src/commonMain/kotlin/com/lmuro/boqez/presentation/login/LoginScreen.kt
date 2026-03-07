@@ -91,7 +91,8 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 onValueChange = {
                     viewModel.onEvent(LoginEvent.OnPasswordChanged(it))
-                }
+                },
+                isPassword = true
             )
             Spacer(Modifier.height(20.dp))
             Text(

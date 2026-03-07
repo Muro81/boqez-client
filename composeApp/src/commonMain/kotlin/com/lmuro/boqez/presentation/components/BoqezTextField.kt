@@ -12,10 +12,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.theme.BoqezThemeProvider
 
@@ -25,11 +36,19 @@ fun BoqezTextField(
     label: String = "",
     placeHolder: String,
     errorMessage: String = "",
+    isPassword : Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit
 ) {
     val isError = errorMessage.isNotEmpty()
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val visualTransformation = when {
+        isPassword && !passwordVisible -> PasswordVisualTransformation()
+        else -> VisualTransformation.None
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -60,6 +79,7 @@ fun BoqezTextField(
             keyboardActions = keyboardActions,
             textStyle = BoqezThemeProvider.typography.interRegular14,
             singleLine = true,
+            visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
@@ -81,6 +101,18 @@ fun BoqezTextField(
                         contentAlignment = Alignment.CenterStart
                     ) {
                         innerTextField()
+                    }
+                    if (isPassword) {
+                        IconButton(
+                            onClick = { passwordVisible = !passwordVisible },
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        ) {
+                            Icon(
+                                imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                contentDescription = null,
+                                tint = BoqezThemeProvider.colors.inkBase
+                            )
+                        }
                     }
                 }
             },
