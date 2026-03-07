@@ -4,6 +4,9 @@
     <string name="montenegrin">Crnogorski</string>
 
     <!-- Errors -->
+    <string name = "error_field_required">Polje je obavezno.</string>
+    <string name = "error_invalid_email">Pogrešan format emaila.</string>
+    <string name = "error_password_min_lenght">Lozinka mora sadržati minimum 8 karaktera.</string>
 
     <string name="email">Email</string>
     <string name="password">Lozinka</string>

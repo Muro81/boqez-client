@@ -4,6 +4,9 @@
     <string name="montenegrin">Montenegrin</string>
 
     <!-- Errors -->
+    <string name = "error_field_required">Field required.</string>
+    <string name = "error_invalid_email">Invalid email format.</string>
+    <string name = "error_password_min_lenght">Password must be at least 8 characters.</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
