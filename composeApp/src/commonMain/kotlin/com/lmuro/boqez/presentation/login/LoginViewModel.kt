@@ -6,6 +6,8 @@ import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.isValidEmail
 import com.lmuro.boqez.data.local.DataStoreApi
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_NAME
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
 import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
@@ -68,10 +70,12 @@ class LoginViewModel(
     private fun login() {
         viewModelScope.launch {
             state.update { it.copy(isLoading = true) }
+            val deviceName = dataStoreApi.read(DEVICE_NAME).orEmpty()
+            val deviceId = dataStoreApi.read(DEVICE_ID).orEmpty()
             repository.login(
                 email = state.value.email,
                 password = state.value.password,
-                device = "test-device"
+                device = deviceName + "_" + deviceId
             ).onSuccess { result ->
                 dataStoreApi.update(ACCESS_TOKEN, result.accessToken)
                 dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
