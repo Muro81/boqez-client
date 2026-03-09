@@ -1,19 +1,26 @@
 package com.lmuro.boqez.presentation.login
 
 import androidx.lifecycle.viewModelScope
+import com.lmuro.boqez.core.locale.getDefaultLocale
 import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
+import com.lmuro.boqez.core.utils.Const
 import com.lmuro.boqez.core.utils.validateEmail
 import com.lmuro.boqez.core.utils.validatePasswordMin
 import com.lmuro.boqez.data.local.DataStoreApi
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_NAME
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
 import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -53,6 +60,33 @@ class LoginViewModel(
                 }
             }
         }
+    }
+
+    init {
+        setupLanguages()
+    }
+
+    private fun setupLanguages() {
+        dataStoreApi.readAsFlow(
+            DataStorePreferenceKeys.USER_PREFERRED_LANGUAGE
+        )
+            .onStart { emit(getDefaultLocale()) }
+            .onEach { savedTag ->
+                val langList = Const.languages
+                val selectedLanguage = langList.find {
+                    it.tag == savedTag
+                } ?: langList.first() // fallback to first if not found
+
+                state.update {
+                    it.copy(
+                        selectedLanguage = selectedLanguage
+                    )
+                }
+                Napier.v("LANG IS $selectedLanguage")
+            }
+            .launchIn(
+                viewModelScope
+            )
     }
 
     private fun validateInputs() {

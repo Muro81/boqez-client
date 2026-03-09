@@ -1,5 +1,6 @@
 package com.lmuro.boqez.presentation.login
 
+import com.lmuro.boqez.domain.model.Language
 import com.lmuro.boqez.presentation.base.BaseState
 
 data class LoginState(
@@ -7,5 +8,6 @@ data class LoginState(
     val password : String = "",
     val emailError : String = "",
     val passwordError : String = "",
+    val selectedLanguage : Language? = null,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading)

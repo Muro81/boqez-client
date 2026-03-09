@@ -2,6 +2,7 @@ package com.lmuro.boqez.presentation.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,10 +31,12 @@ import boqez.composeapp.generated.resources.login
 import boqez.composeapp.generated.resources.or
 import boqez.composeapp.generated.resources.password
 import boqez.composeapp.generated.resources.sign_up
+import com.lmuro.boqez.core.utils.Const
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.BoqezTextField
+import com.lmuro.boqez.presentation.components.LanguageDropdown
 import com.lmuro.boqez.presentation.components.PrimaryButton
 import com.lmuro.boqez.theme.BoqezThemeProvider
 import org.jetbrains.compose.resources.stringResource
@@ -42,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     showSnackBar: (String) -> Unit,
-    switchLanguage: (String) -> Unit // TODO add logic and UI for lang switching
+    switchLanguage: (String) -> Unit
 ) {
     val state by viewModel.stateFlow.collectAsState()
     viewModel.snackBarChanel.ObserveWithLifecycle {
@@ -60,18 +64,28 @@ fun LoginScreen(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
-            Row(
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(Res.string.app_name),
                     style = BoqezThemeProvider.typography.interBold32,
-                    color = BoqezThemeProvider.colors.primaryBase
+                    color = BoqezThemeProvider.colors.primaryBase,
+                    modifier = Modifier.align(Alignment.Center)
                 )
+                state.selectedLanguage?.let { selectedLanguage ->
+                    LanguageDropdown(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd),
+                        languages = Const.languages,
+                        selectedLanguage = selectedLanguage,
+                        onLanguageSelected = { newLang ->
+                            switchLanguage(newLang.tag)
+                        }
+                    )
+                }
             }
             BoqezTextField(
                 value = state.email,
@@ -98,7 +112,7 @@ fun LoginScreen(
             Spacer(Modifier.height(20.dp))
             Text(
                 text = stringResource(Res.string.forgot_password),
-                color = BoqezThemeProvider.colors.inkBase,
+                color = BoqezThemeProvider.colors.primaryDarkest,
                 style = BoqezThemeProvider.typography.interRegular14,
                 modifier = Modifier.noRippleClickable {
                     viewModel.onEvent(LoginEvent.OnForgotPasswordClick)

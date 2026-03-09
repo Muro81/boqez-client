@@ -105,3 +105,21 @@ suspend fun String.validateUsername(): String {
         else -> ""
     }
 }
+
+
+fun String.countryCodeToFlag(): String {
+    if (this.length != 2) return "🏳️"
+
+    val code = this.uppercase()
+    val firstLetter = 0x1F1E6 + (code[0].code - 'A'.code)
+    val secondLetter = 0x1F1E6 + (code[1].code - 'A'.code)
+
+    return codePointToString(firstLetter) + codePointToString(secondLetter)
+}
+
+private fun codePointToString(codePoint: Int): String {
+    val offset = codePoint - 0x10000
+    val high = (offset ushr 10) + 0xD800
+    val low = (offset and 0x3FF) + 0xDC00
+    return charArrayOf(high.toChar(), low.toChar()).concatToString()
+}
