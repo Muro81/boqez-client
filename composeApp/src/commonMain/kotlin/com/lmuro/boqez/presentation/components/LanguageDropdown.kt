@@ -45,7 +45,7 @@ fun LanguageDropdown(
         OutlinedButton(
             onClick = { expanded = true },
             shape = RoundedCornerShape(8.dp),
-            border = BorderStroke(1.dp, BoqezThemeProvider.colors.primaryBase),
+            border = BorderStroke(2.dp, BoqezThemeProvider.colors.primaryBase),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Text(
