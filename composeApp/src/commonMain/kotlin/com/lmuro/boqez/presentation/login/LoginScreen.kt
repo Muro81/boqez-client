@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import boqez.composeapp.generated.resources.Res
 import boqez.composeapp.generated.resources.app_name
@@ -77,7 +78,7 @@ fun LoginScreen(
                 label = stringResource(Res.string.email),
                 placeHolder = stringResource(Res.string.hint_email),
                 errorMessage = state.emailError,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Email),
                 onValueChange = {
                     viewModel.onEvent(LoginEvent.OnEmailChanged(it))
                 }
@@ -88,7 +89,7 @@ fun LoginScreen(
                 label = stringResource(Res.string.password),
                 placeHolder = stringResource(Res.string.hint_password),
                 errorMessage = state.passwordError,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
                 onValueChange = {
                     viewModel.onEvent(LoginEvent.OnPasswordChanged(it))
                 },

@@ -4,15 +4,15 @@
     <string name="montenegrin">Crnogorski</string>
 
     <!-- Errors -->
-    <string name = "error_field_required">Polje je obavezno.</string>
-    <string name = "error_invalid_email">Pogrešan format emaila.</string>
-    <string name = "error_password_min_lenght">Lozinka mora sadržati minimum 8 karaktera.</string>
-    <string name = "error_password_max_length">Lozinka mora sadržati manje od 100 karaktera.</string>
-    <string name = "error_password_no_numbers">Lozinka mora sadržati barem jedan broj.</string>
-    <string name = "error_password_no_letter">Lozinka mora sadržati barem jedno slovo.</string>
-    <string name = "error_password_no_special">Lozinka mora sadržato barem jedan specijalni karakter.</string>
-    <string name = "error_min_4_char">Mora sadržati barem 4 karaktera.</string>
-    <string name = "error_passwords_no_match">Lozinke moraju biti iste.</string>
+    <string name="error_field_required">Polje je obavezno.</string>
+    <string name="error_invalid_email">Pogrešan format emaila.</string>
+    <string name="error_password_min_lenght">Lozinka mora sadržati minimum 8 karaktera.</string>
+    <string name="error_password_max_length">Lozinka mora sadržati manje od 100 karaktera.</string>
+    <string name="error_password_no_numbers">Lozinka mora sadržati barem jedan broj.</string>
+    <string name="error_password_no_letter">Lozinka mora sadržati barem jedno slovo.</string>
+    <string name="error_password_no_special">Lozinka mora sadržato barem jedan specijalni karakter.</string>
+    <string name="error_min_4_char">Mora sadržati barem 4 karaktera.</string>
+    <string name="error_passwords_no_match">Lozinke moraju biti iste.</string>
 
     <string name="email">Email</string>
     <string name="password">Lozinka</string>
@@ -24,4 +24,7 @@
     <string name="hint_username">Unesite korisnicko ime:</string>
     <string name="sign_up">Prijavi se</string>
     <string name="or">Or</string>
+    <string name="confirm_password">Potvrdite lozinku</string>
+    <string name="hint_confirm_password">Potvrdite lozinku:</string>
+
 </resources>

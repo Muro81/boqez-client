@@ -33,11 +33,22 @@ class RegisterViewModel(
                 }
             }
 
-            is RegisterEvent.OnConfirmPasswordChanged -> TODO()
-            is RegisterEvent.OnEmailChanged -> TODO()
-            is RegisterEvent.OnPasswordChanged -> TODO()
+            is RegisterEvent.OnConfirmPasswordChanged -> {
+                state.update { it.copy(confirmPassword = event.confirmPassword) }
+            }
+
+            is RegisterEvent.OnEmailChanged -> {
+                state.update { it.copy(email = event.email) }
+            }
+
+            is RegisterEvent.OnPasswordChanged -> {
+                state.update { it.copy(password = event.password) }
+            }
+
             RegisterEvent.OnRegisterClick -> validateFields()
-            is RegisterEvent.OnUsernameChanged -> TODO()
+            is RegisterEvent.OnUsernameChanged -> {
+                state.update { it.copy(username = event.username) }
+            }
         }
     }
 
@@ -48,7 +59,8 @@ class RegisterViewModel(
             val usernameError = state.value.username.validateField()
 
             val passwordError = state.value.password.validatePassword()
-            val confirmPasswordError = state.value.confirmPassword.validateConfirmPassword(state.value.password)
+            val confirmPasswordError =
+                state.value.confirmPassword.validateConfirmPassword(state.value.password)
 
             state.update {
                 it.copy(
@@ -58,7 +70,7 @@ class RegisterViewModel(
                     confirmPasswordError = confirmPasswordError
                 )
             }
-            if (emailError.isNotEmpty() || usernameError.isNotEmpty() || passwordError.isNotEmpty()  || confirmPasswordError.isNotEmpty()) return@launch
+            if (emailError.isNotEmpty() || usernameError.isNotEmpty() || passwordError.isNotEmpty() || confirmPasswordError.isNotEmpty()) return@launch
             register()
         }
 
