@@ -13,6 +13,9 @@
     <string name="error_password_no_special">Lozinka mora sadržato barem jedan specijalni karakter.</string>
     <string name="error_min_4_char">Mora sadržati barem 4 karaktera.</string>
     <string name="error_passwords_no_match">Lozinke moraju biti iste.</string>
+    <string name="error_min_3_char">Korisničko ime mora sadržati najmanje 3 karaktera.</string>
+    <string name="error_max_50_char">Korisničko ime mora sadržati manje od 50 karaktera.</string>
+    <string name="error_username_invalid_chars">Korisničko ime može sadržati samo slova, brojeve i donje crte.</string>
 
     <string name="email">Email</string>
     <string name="password">Lozinka</string>

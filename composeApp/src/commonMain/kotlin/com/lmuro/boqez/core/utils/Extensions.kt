@@ -22,6 +22,9 @@ import boqez.composeapp.generated.resources.error_password_no_letter
 import boqez.composeapp.generated.resources.error_password_no_numbers
 import boqez.composeapp.generated.resources.error_password_no_special
 import boqez.composeapp.generated.resources.error_passwords_no_match
+import boqez.composeapp.generated.resources.error_min_3_char
+import boqez.composeapp.generated.resources.error_max_50_char
+import boqez.composeapp.generated.resources.error_username_invalid_chars
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -89,6 +92,16 @@ suspend fun String.validateConfirmPassword(original: String): String {
     return when {
         this.isBlank() -> getString(Res.string.error_field_required)
         this != original -> getString(Res.string.error_passwords_no_match)
+        else -> ""
+    }
+}
+
+suspend fun String.validateUsername(): String {
+    return when {
+        this.isBlank() -> getString(Res.string.error_field_required)
+        this.length < 3 -> getString(Res.string.error_min_3_char)
+        this.length > 50 -> getString(Res.string.error_max_50_char)
+        !this.matches(Regex("^[a-zA-Z0-9_]+$")) -> getString(Res.string.error_username_invalid_chars)
         else -> ""
     }
 }

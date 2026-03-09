@@ -8,6 +8,7 @@ import com.lmuro.boqez.core.utils.validateConfirmPassword
 import com.lmuro.boqez.core.utils.validateEmail
 import com.lmuro.boqez.core.utils.validateField
 import com.lmuro.boqez.core.utils.validatePassword
+import com.lmuro.boqez.core.utils.validateUsername
 import com.lmuro.boqez.data.local.DataStoreApi
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
@@ -56,7 +57,7 @@ class RegisterViewModel(
         viewModelScope.launch {
             val emailError = state.value.email.validateEmail()
 
-            val usernameError = state.value.username.validateField()
+            val usernameError = state.value.username.validateUsername()
 
             val passwordError = state.value.password.validatePassword()
             val confirmPasswordError =
@@ -90,9 +91,14 @@ class RegisterViewModel(
             ).onSuccess { result ->
                 dataStoreApi.update(ACCESS_TOKEN, result.accessToken)
                 dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
-                _snackBarChannel.send("Success on register. $ACCESS_TOKEN")
+                _snackBarChannel.send("Success on register. ${result.accessToken}")
             }.onError { error, message ->
-                _snackBarChannel.send(message ?: error.toString())
+                val decide = message ?: error.toString()
+                state.update {
+                    it.copy(
+                        confirmPasswordError = decide
+                    )
+                }
             }
             state.update { it.copy(isLoading = false) }
         }

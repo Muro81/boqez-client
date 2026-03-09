@@ -13,6 +13,9 @@
     <string name="error_password_no_special">Password must contain at least one special character.</string>
     <string name="error_min_4_char">Must be at least 4 characters.</string>
     <string name="error_passwords_no_match">Passwords must match.</string>
+    <string name="error_min_3_char">Username must be at least 3 characters.</string>
+    <string name="error_max_50_char">Username must be less than 50 characters.</string>
+    <string name="error_username_invalid_chars">Username can only contain letters, numbers, and underscores.</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
