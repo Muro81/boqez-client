@@ -1,10 +1,14 @@
 package com.lmuro.boqez.data.remote
 
 import com.lmuro.boqez.BuildKonfig
+import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.data.local.DataStoreApi
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_NAME
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.USER_PREFERRED_LANGUAGE
 import com.lmuro.boqez.data.remote.dto.requests.RefreshTokenRequestDto
 import com.lmuro.boqez.data.remote.dto.response.AuthResponseDto
 import io.github.aakira.napier.DebugAntilog
@@ -30,6 +34,7 @@ import io.ktor.client.request.url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,7 +42,7 @@ fun provideKtorClient(
     dataStoreApi: DataStoreApi,
     navigator: Navigator
 ): HttpClient {
-
+    val languageKey = runBlocking { dataStoreApi.read(USER_PREFERRED_LANGUAGE).orEmpty() }
     val client = HttpClient {
         engine {
             dispatcher = Dispatchers.IO
@@ -62,6 +67,7 @@ fun provideKtorClient(
             url(BuildKonfig.BASE_URL) // Your base URL
             // You can also set default headers here
             header("Content-Type", "application/json")
+            header("Accept-Language",languageKey)
         }
         install(WebSockets) {
             pingInterval = 20.seconds// Keep connection alive
@@ -87,21 +93,48 @@ fun provideKtorClient(
                 }
 
                 refreshTokens {
-                    // Equivalent to TokenRefreshAuthenticator
-                    val newTokens = client.post {
-                        markAsRefreshTokenRequest()
-                        url("/auth/api/refresh")
-                        setBody(
-                            RefreshTokenRequestDto(
-                                token = dataStoreApi.read(REFRESH_TOKEN).orEmpty(),
-                                device = "test"
+                    try {
+                        val deviceName = dataStoreApi.read(DEVICE_NAME).orEmpty()
+                        val deviceId = dataStoreApi.read(DEVICE_ID).orEmpty()
+                        val newTokens = client.post {
+                            markAsRefreshTokenRequest()
+                            url("/auth/api/refresh")
+                            setBody(
+                                RefreshTokenRequestDto(
+                                    token = dataStoreApi.read(REFRESH_TOKEN).orEmpty(),
+                                    device = deviceName + "_" + deviceId
+                                )
                             )
+                        }.body<AuthResponseDto>()
+
+                        // Save new tokens if needed
+                        dataStoreApi.update(ACCESS_TOKEN, newTokens.accessToken)
+                        dataStoreApi.update(REFRESH_TOKEN, newTokens.refreshToken)
+
+                        BearerTokens(
+                            accessToken = newTokens.accessToken,
+                            refreshToken = newTokens.refreshToken
                         )
-                    }.body<AuthResponseDto>()
-                    BearerTokens(
-                        accessToken = newTokens.accessToken,
-                        refreshToken = newTokens.refreshToken
-                    )
+                    } catch (e: Exception) {
+
+                        val deviceName = dataStoreApi.read(DEVICE_NAME).orEmpty()
+                        val deviceId = dataStoreApi.read(DEVICE_ID).orEmpty()
+                        val prefLang = dataStoreApi.read(USER_PREFERRED_LANGUAGE).orEmpty()
+
+                        dataStoreApi.clearAll()
+
+                        dataStoreApi.update(DEVICE_ID,deviceId)
+                        dataStoreApi.update(DEVICE_NAME,deviceName)
+                        dataStoreApi.update(USER_PREFERRED_LANGUAGE,prefLang)
+
+                        navigator.navigateTo(
+                            destination = Screen.LoginScreen
+                        ){
+                            popUpTo(Screen.ROOT)
+                        }
+
+                        null
+                    }
                 }
             }
         }
