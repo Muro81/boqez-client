@@ -105,7 +105,7 @@ fun RegisterScreen(
                 value = state.confirmPassword,
                 placeHolder = stringResource(Res.string.hint_confirm_password),
                 onValueChange = {
-                    viewModel.onEvent(RegisterEvent.OnPasswordChanged(it))
+                    viewModel.onEvent(RegisterEvent.OnConfirmPasswordChanged(it))
                 },
                 label = stringResource(Res.string.confirm_password),
                 errorMessage = state.confirmPasswordError,
