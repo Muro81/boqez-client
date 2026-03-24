@@ -7,4 +7,8 @@ sealed class HomeEvent : BaseEvent {
     data object OnSettingsClick : HomeEvent()
     data object OnProfileClick : HomeEvent()
     data object OnAboutUsClick : HomeEvent()
+    data class OnLobbyCodeChanged(val code : String) : HomeEvent()
+    data object OnLobbyCreate : HomeEvent()
+    data object OnLobbyJoin : HomeEvent()
+    data object OnDissmissDialog : HomeEvent()
 }

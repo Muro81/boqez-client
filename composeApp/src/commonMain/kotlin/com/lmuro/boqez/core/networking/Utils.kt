@@ -1,6 +1,6 @@
 package com.lmuro.boqez.core.networking
 
-import com.lmuro.boqez.data.remote.dto.ErrorResponseDto
+import com.lmuro.boqez.data.remote.dto.ErrorResponse
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 
@@ -30,7 +30,7 @@ suspend inline fun <reified T> responseToResource(
 ): Resource<T, NetworkError, String?> {
     return try {
         val errorMessage = runCatching {
-            response.body<ErrorResponseDto>()?.message
+            response.body<ErrorResponse>()?.message
         }.getOrNull()
 
         when (response.status.value) {

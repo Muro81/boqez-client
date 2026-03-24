@@ -3,11 +3,16 @@ package com.lmuro.boqez.data.repository
 import com.lmuro.boqez.core.networking.NetworkError
 import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.networking.map
+import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.mappers.toAuth
+import com.lmuro.boqez.data.remote.mappers.toJoinLobby
 import com.lmuro.boqez.data.remote.services.ApiService
 import com.lmuro.boqez.domain.model.Auth
+import com.lmuro.boqez.domain.model.LobbyJoin
 import com.lmuro.boqez.domain.repository.BoqezRepository
 
 class BoqezRepositoryImpl(
@@ -51,5 +56,25 @@ class BoqezRepositoryImpl(
 
     override suspend fun getUser(): Resource<Any, NetworkError, String?> {
         return apiService.getUser()
+    }
+
+    override suspend fun createLobby(
+        isPublic: Boolean,
+        gameType: GameType?
+    ): Resource<String, NetworkError, String?> {
+        return apiService.createLobby(
+            body = LobbyCreateRequestDto(
+                isPublic = isPublic,
+                gameType = gameType
+            )
+        ).map { it.data.id }
+    }
+
+    override suspend fun joinLobby(lobbyId: String): Resource<LobbyJoin, NetworkError, String?> {
+        return apiService.joinLobby(
+            body = LobbyWrapperRequestDto(
+                lobbyId = lobbyId
+            )
+        ).map { it.data.toJoinLobby() }
     }
 }

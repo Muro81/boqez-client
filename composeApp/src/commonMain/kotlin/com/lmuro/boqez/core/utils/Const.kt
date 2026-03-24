@@ -18,4 +18,5 @@ object Const {
             flagCode = "ME"
         )
     )
+     const val LOBBY_CODE_LENGTH = 6
 }

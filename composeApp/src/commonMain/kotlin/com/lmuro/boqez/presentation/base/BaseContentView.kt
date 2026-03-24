@@ -2,6 +2,7 @@ package com.lmuro.boqez.presentation.base
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +25,7 @@ fun BaseContentView(
     state: BaseState,
     topBar: @Composable () -> Unit = {},
     fab: @Composable () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable BoxScope.() -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
