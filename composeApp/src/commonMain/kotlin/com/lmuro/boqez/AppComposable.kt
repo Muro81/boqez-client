@@ -15,10 +15,13 @@ import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.utils.CustomModifiers
 import com.lmuro.boqez.core.utils.rememberAppState
+import com.lmuro.boqez.data.local.DataStoreApi
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACCESS_TOKEN
 import com.lmuro.boqez.presentation.viewmodels.AppViewModel
 import com.lmuro.boqez.presentation.viewmodels.LanguageViewModel
 import com.lmuro.boqez.theme.BoqezTheme
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -30,12 +33,10 @@ fun AppComposable(
 ) {
     val languageCode by languageViewModel.languageCode.collectAsStateWithLifecycle()
     val navigator = koinInject<Navigator>()
-    val platform = koinInject<Platform>()
+    val dataStoreApi = koinInject<DataStoreApi>()
 
-    val deviceName = platform.deviceName
-    val deviceId = platform.deviceId
-
-    val startDestination = Screen.LoginScreen
+    val hasSession = runBlocking { dataStoreApi.read(ACCESS_TOKEN)}
+    val startDestination = if(hasSession == null) Screen.LoginScreen else Screen.HomeScreen
     val appState = rememberAppState()
     CompositionLocalProvider(
         LocalAppLocale provides languageCode

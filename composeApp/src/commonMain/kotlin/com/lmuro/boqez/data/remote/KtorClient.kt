@@ -81,14 +81,18 @@ fun provideKtorClient(
                 }
             }
             level = LogLevel.ALL // equivalent to BODY level
-        }.also { Napier.base(DebugAntilog()) }
+        }
         install(Auth) {
             bearer {
+                cacheTokens = false
                 loadTokens {
                     // Load your tokens here
+                    val accessToken = dataStoreApi.read(ACCESS_TOKEN).orEmpty()
+                    val refreshToken = dataStoreApi.read(REFRESH_TOKEN)
+                    Napier.v("Signed with $accessToken $refreshToken")
                     BearerTokens(
-                        accessToken = dataStoreApi.read(ACCESS_TOKEN).orEmpty(),
-                        refreshToken = dataStoreApi.read(REFRESH_TOKEN)
+                        accessToken = accessToken,
+                        refreshToken = refreshToken
                     )
                 }
 
@@ -98,7 +102,7 @@ fun provideKtorClient(
                         val deviceId = dataStoreApi.read(DEVICE_ID).orEmpty()
                         val newTokens = client.post {
                             markAsRefreshTokenRequest()
-                            url("/auth/api/refresh")
+                            url("/api/auth/refresh")
                             setBody(
                                 RefreshTokenRequestDto(
                                     token = dataStoreApi.read(REFRESH_TOKEN).orEmpty(),
@@ -117,16 +121,8 @@ fun provideKtorClient(
                         )
                     } catch (e: Exception) {
 
-                        val deviceName = dataStoreApi.read(DEVICE_NAME).orEmpty()
-                        val deviceId = dataStoreApi.read(DEVICE_ID).orEmpty()
-                        val prefLang = dataStoreApi.read(USER_PREFERRED_LANGUAGE).orEmpty()
-
-                        dataStoreApi.clearAll()
-
-                        dataStoreApi.update(DEVICE_ID,deviceId)
-                        dataStoreApi.update(DEVICE_NAME,deviceName)
-                        dataStoreApi.update(USER_PREFERRED_LANGUAGE,prefLang)
-
+                        dataStoreApi.delete(ACCESS_TOKEN)
+                        dataStoreApi.delete(REFRESH_TOKEN)
                         navigator.navigateTo(
                             destination = Screen.LoginScreen
                         ){

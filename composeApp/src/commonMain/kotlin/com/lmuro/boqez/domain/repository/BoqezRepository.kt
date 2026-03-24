@@ -18,4 +18,6 @@ interface BoqezRepository {
         confirmPassword: String,
         device: String
     ): Resource<Auth, NetworkError, String?>
+
+    suspend fun getUser() : Resource<Any, NetworkError,String?>
 }

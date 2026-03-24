@@ -25,4 +25,8 @@ class ApiService(
             body = body
         )
     }
+
+    suspend fun getUser() : Resource<Any, NetworkError, String?>{
+        return get("/api/user")
+    }
 }

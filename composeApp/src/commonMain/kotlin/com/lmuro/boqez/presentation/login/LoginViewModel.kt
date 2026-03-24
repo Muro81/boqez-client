@@ -112,9 +112,14 @@ class LoginViewModel(
                 password = state.value.password,
                 device = deviceName + "_" + deviceId
             ).onSuccess { result ->
+                Napier.v("Tokens ${result.accessToken} ${result.refreshToken}")
                 dataStoreApi.update(ACCESS_TOKEN, result.accessToken)
                 dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
-                _snackBarChannel.send("Success on login. $ACCESS_TOKEN")
+                navigator.navigateTo(
+                    destination = Screen.HomeScreen
+                ){
+                    popUpTo(Screen.ROOT)
+                }
             }.onError { error, message ->
                 val decide = message ?: error.toString()
                 state.update {

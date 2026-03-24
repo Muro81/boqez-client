@@ -48,4 +48,8 @@ class BoqezRepositoryImpl(
             it.data.toAuth()
         }
     }
+
+    override suspend fun getUser(): Resource<Any, NetworkError, String?> {
+        return apiService.getUser()
+    }
 }

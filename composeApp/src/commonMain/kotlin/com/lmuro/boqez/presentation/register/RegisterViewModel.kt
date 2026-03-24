@@ -1,12 +1,12 @@
 package com.lmuro.boqez.presentation.register
 
 import androidx.lifecycle.viewModelScope
+import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.validateConfirmPassword
 import com.lmuro.boqez.core.utils.validateEmail
-import com.lmuro.boqez.core.utils.validateField
 import com.lmuro.boqez.core.utils.validatePassword
 import com.lmuro.boqez.core.utils.validateUsername
 import com.lmuro.boqez.data.local.DataStoreApi
@@ -91,7 +91,11 @@ class RegisterViewModel(
             ).onSuccess { result ->
                 dataStoreApi.update(ACCESS_TOKEN, result.accessToken)
                 dataStoreApi.update(REFRESH_TOKEN, result.refreshToken)
-                _snackBarChannel.send("Success on register. ${result.accessToken}")
+                navigator.navigateTo(
+                    destination = Screen.HomeScreen
+                ){
+                    popUpTo(Screen.ROOT)
+                }
             }.onError { error, message ->
                 val decide = message ?: error.toString()
                 state.update {
