@@ -5,5 +5,6 @@ import com.lmuro.boqez.core.utils.GameType
 data class LobbyJoin(
     val lobbyId: String,
     val gameType: GameType?,
-    val players : List<LobbyUser>
+    val players : List<LobbyUser>,
+    val ownerId : String
 )

@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
 data class LobbyJoinResponseDto(
     @SerialName("lobby_id") val lobbyId: String,
     @SerialName("game_type") val gameType: GameType?,
-    val players : List<LobbyUserDto>
+    val players : List<LobbyUserDto>,
+    @SerialName("owner_id") val ownerId : String
 )

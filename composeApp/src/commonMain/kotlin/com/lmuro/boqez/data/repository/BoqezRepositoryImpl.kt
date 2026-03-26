@@ -10,9 +10,11 @@ import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.mappers.toAuth
 import com.lmuro.boqez.data.remote.mappers.toJoinLobby
+import com.lmuro.boqez.data.remote.mappers.toUserInfo
 import com.lmuro.boqez.data.remote.services.ApiService
 import com.lmuro.boqez.domain.model.Auth
 import com.lmuro.boqez.domain.model.LobbyJoin
+import com.lmuro.boqez.domain.model.UserInfo
 import com.lmuro.boqez.domain.repository.BoqezRepository
 
 class BoqezRepositoryImpl(
@@ -54,8 +56,10 @@ class BoqezRepositoryImpl(
         }
     }
 
-    override suspend fun getUser(): Resource<Any, NetworkError, String?> {
-        return apiService.getUser()
+    override suspend fun getUser(): Resource<UserInfo, NetworkError, String?> {
+        return apiService.getUser().map {
+            it.data.toUserInfo()
+        }
     }
 
     override suspend fun createLobby(

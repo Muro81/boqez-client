@@ -9,9 +9,9 @@ import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_ID
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.DEVICE_NAME
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.REFRESH_TOKEN
 import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.USER_PREFERRED_LANGUAGE
+import com.lmuro.boqez.data.remote.dto.DataResponse
 import com.lmuro.boqez.data.remote.dto.requests.RefreshTokenRequestDto
 import com.lmuro.boqez.data.remote.dto.response.AuthResponseDto
-import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -25,8 +25,6 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.pingInterval
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -36,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.seconds
 
 fun provideKtorClient(
     dataStoreApi: DataStoreApi,
@@ -69,11 +66,6 @@ fun provideKtorClient(
             header("Content-Type", "application/json")
             header("Accept-Language",languageKey)
         }
-        install(WebSockets) {
-            pingInterval = 20.seconds// Keep connection alive
-            maxFrameSize = Long.MAX_VALUE
-        }
-
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
@@ -109,7 +101,7 @@ fun provideKtorClient(
                                     device = deviceName + "_" + deviceId
                                 )
                             )
-                        }.body<AuthResponseDto>()
+                        }.body<DataResponse<AuthResponseDto>>().data
 
                         // Save new tokens if needed
                         dataStoreApi.update(ACCESS_TOKEN, newTokens.accessToken)

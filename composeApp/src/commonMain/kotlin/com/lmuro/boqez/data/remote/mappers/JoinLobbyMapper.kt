@@ -7,6 +7,7 @@ fun LobbyJoinResponseDto.toJoinLobby(): LobbyJoin {
     return LobbyJoin(
         lobbyId = lobbyId,
         gameType = gameType,
-        players = players.map { it.toLobbyUser() }
+        players = players.map { it.toLobbyUser() },
+        ownerId = ownerId
     )
 }

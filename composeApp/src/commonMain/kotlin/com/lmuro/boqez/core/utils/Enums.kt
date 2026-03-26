@@ -28,3 +28,15 @@ object GameTypeSerializer : KSerializer<GameType> {
         return GameType.entries.first { it.gameName == gameName }
     }
 }
+
+enum class WebSocketMessageType(val message : String){
+    PLAYER_JOINED("player_joined"),
+    PLAYER_LEFT("player_left"),
+    OWNER_LEFT("owner_left"),
+    OWNER_CHANGED("owner_changed"),
+    PLAYER_JOINED_TEAM("player_joined_team"),
+    PLAYER_LEFT_TEAM("player_left_team"),
+    PLAYER_READY("player_ready"),
+    GAME_TYPE_CHANGE("game_type_change"),
+    KICK_PLAYER("kick_player")
+}

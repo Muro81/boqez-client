@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.lmuro.boqez.core.navigation.destinations.homeComposable
+import com.lmuro.boqez.core.navigation.destinations.lobbyComposable
 import com.lmuro.boqez.core.navigation.destinations.loginComposable
 import com.lmuro.boqez.core.navigation.destinations.registerComposable
 import com.lmuro.boqez.core.navigation.utils.NavType
@@ -46,5 +47,6 @@ fun BoqezAppNavigation(
         loginComposable(showSnackBar = showSnackBar, switchLanguage = switchLanguage)
         registerComposable(showSnackBar = showSnackBar)
         homeComposable(showSnackBar = showSnackBar)
+        lobbyComposable(showSnackBar = showSnackBar)
     }
 }

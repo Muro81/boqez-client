@@ -91,7 +91,4 @@ open class KtorApiService(
             Resource.Error(NetworkError.NO_INTERNET, e.message)
         }
     }
-//   TODO add WebSocket functionality
-//    private fun sendWSMessage() {}
-//    private fun readWSMessage() {}
 }

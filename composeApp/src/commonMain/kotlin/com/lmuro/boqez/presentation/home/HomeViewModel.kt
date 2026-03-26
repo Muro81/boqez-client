@@ -1,6 +1,7 @@
 package com.lmuro.boqez.presentation.home
 
 import androidx.lifecycle.viewModelScope
+import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
@@ -55,19 +56,20 @@ class HomeViewModel(
     }
 
     private fun loadUserData() {
-//        viewModelScope.launch {
-//            repository.getUser()
-//                .onSuccess { res ->
-//                state.update {
-//                    it.copy(
-//                        username = res.username
-//                    )
-//                }
-//            }.onError { error, message ->
-//                val decide = message ?: error.toString()
-//                _snackBarChannel.send(decide)
-//            }
-//        }
+        viewModelScope.launch {
+            repository.getUser()
+                .onSuccess { res ->
+                    state.update {
+                        it.copy(
+                            username = res.username,
+                            userId = res.userId
+                        )
+                    }
+                }.onError { error, message ->
+                    val decide = message ?: error.toString()
+                    _snackBarChannel.send(decide)
+                }
+        }
     }
 
     private fun createLobby() {
@@ -76,8 +78,14 @@ class HomeViewModel(
             repository.createLobby(
                 isPublic = true,
                 gameType = null
-            ).onSuccess {
-
+            ).onSuccess { lobbyId ->
+                navigator.navigateTo(
+                    destination = Screen.LobbyScreen(
+                        lobbyId = lobbyId,
+                        userId = state.value.userId,
+                        ownerId = state.value.userId
+                    )
+                )
             }.onError { error, message ->
                 val decide = message ?: error.toString()
                 _snackBarChannel.send(decide)
@@ -91,8 +99,16 @@ class HomeViewModel(
             state.update { it.copy(isLoading = true) }
             repository.joinLobby(
                 lobbyId = state.value.lobbyCode
-            ).onSuccess {
-
+            ).onSuccess { res ->
+                navigator.navigateTo(
+                    destination = Screen.LobbyScreen(
+                        lobbyId = res.lobbyId,
+                        players = res.players,
+                        gameType = res.gameType,
+                        ownerId = res.ownerId,
+                        userId = state.value.userId
+                    )
+                )
             }.onError { error, message ->
                 val decide = message ?: error.toString()
                 _snackBarChannel.send(decide)

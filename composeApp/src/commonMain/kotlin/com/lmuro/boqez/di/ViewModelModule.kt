@@ -1,6 +1,7 @@
 package com.lmuro.boqez.di
 
 import com.lmuro.boqez.presentation.home.HomeViewModel
+import com.lmuro.boqez.presentation.lobby.LobbyViewModel
 import com.lmuro.boqez.presentation.viewmodels.LanguageViewModel
 import com.lmuro.boqez.presentation.login.LoginViewModel
 import com.lmuro.boqez.presentation.register.RegisterViewModel
@@ -14,4 +15,5 @@ val viewModelModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::LobbyViewModel)
 }

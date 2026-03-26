@@ -5,6 +5,7 @@ import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.domain.model.Auth
 import com.lmuro.boqez.domain.model.LobbyJoin
+import com.lmuro.boqez.domain.model.UserInfo
 
 interface BoqezRepository {
     suspend fun login(
@@ -21,7 +22,7 @@ interface BoqezRepository {
         device: String
     ): Resource<Auth, NetworkError, String?>
 
-    suspend fun getUser(): Resource<Any, NetworkError, String?>
+    suspend fun getUser(): Resource<UserInfo, NetworkError, String?>
 
     suspend fun createLobby(
         isPublic: Boolean,

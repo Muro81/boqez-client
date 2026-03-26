@@ -11,6 +11,7 @@ import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.dto.response.AuthResponseDto
 import com.lmuro.boqez.data.remote.dto.response.IdWrapperResponse
 import com.lmuro.boqez.data.remote.dto.response.LobbyJoinResponseDto
+import com.lmuro.boqez.data.remote.dto.response.UserInfoResponseDto
 import io.ktor.client.HttpClient
 
 class ApiService(
@@ -31,7 +32,7 @@ class ApiService(
         )
     }
 
-    suspend fun getUser() : Resource<Any, NetworkError, String?>{ //TODO needs work
+    suspend fun getUser() : Resource<DataResponse<UserInfoResponseDto>, NetworkError, String?>{
         return get("/api/user")
     }
 
