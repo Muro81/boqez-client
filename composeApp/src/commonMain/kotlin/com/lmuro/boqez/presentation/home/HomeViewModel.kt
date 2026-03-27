@@ -83,7 +83,8 @@ class HomeViewModel(
                     destination = Screen.LobbyScreen(
                         lobbyId = lobbyId,
                         userId = state.value.userId,
-                        ownerId = state.value.userId
+                        ownerId = state.value.userId,
+                        username = state.value.username
                     )
                 )
             }.onError { error, message ->
@@ -106,7 +107,8 @@ class HomeViewModel(
                         players = res.players,
                         gameType = res.gameType,
                         ownerId = res.ownerId,
-                        userId = state.value.userId
+                        userId = state.value.userId,
+                        username = state.value.username
                     )
                 )
             }.onError { error, message ->

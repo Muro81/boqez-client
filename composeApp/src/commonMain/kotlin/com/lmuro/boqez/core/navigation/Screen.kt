@@ -28,6 +28,7 @@ sealed interface Screen {
         val gameType: GameType? = null,
         val players : List<LobbyUser> = emptyList(),
         val userId : String,
-        val ownerId : String
+        val ownerId : String,
+        val username : String
     ) : Screen
 }
