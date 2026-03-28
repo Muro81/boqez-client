@@ -50,10 +50,36 @@ val BlackText = Color(0xFF2A2A2A)
 
 val Grey100 = Color(0xFF131214)
 
-
 val LabelsPrimary = Color(0xFF404040)
 
 val GoldYellow = Color(0xFFD28900)
+
+// ── Card Game / Lobby Theme ──────────────────────────────────────────────────
+
+// Parchment — warm off-white card surface
+val Parchment = Color(0xFFF5EAD6)
+val ParchmentMid = Color(0xFFEDE0C4)
+val ParchmentDark = Color(0xFFE4D3A8)
+
+// Felt — dark green table surface
+val FeltDarkest = Color(0xFF0E2218)
+val FeltDark = Color(0xFF1A3A2A)
+val FeltLight = Color(0xFF244D38)
+
+// Gold — ornamental accents, borders, strips
+val GoldLight = Color(0xFFE8B84B)
+val GoldBase = Color(0xFFC9962A)
+val GoldDark = Color(0xFF8C6318)
+
+// Crimson — Team A, active states, primary button
+val CrimsonPale = Color(0xFFF9EAEA)
+val CrimsonLight = Color(0xFFB52424)
+val CrimsonBase = Color(0xFF8B1A1A)
+
+// Ink warm — player names, body text on parchment
+val InkWarm = Color(0xFF3D2E12)
+val InkWarmDim = Color(0xFF7A6040)
+
 
 @Immutable
 data class BoqezColors(
@@ -95,6 +121,21 @@ data class BoqezColors(
     val blackText: Color,
     val labelsPrimary: Color,
     val goldYellow: Color,
+    // Card game
+    val parchment: Color,
+    val parchmentMid: Color,
+    val parchmentDark: Color,
+    val feltDarkest: Color,
+    val feltDark: Color,
+    val feltLight: Color,
+    val goldLight: Color,
+    val goldBase: Color,
+    val goldDark: Color,
+    val crimsonPale: Color,
+    val crimsonLight: Color,
+    val crimsonBase: Color,
+    val inkWarm: Color,
+    val inkWarmDim: Color,
 )
 
 val LocalBoqezColors = staticCompositionLocalOf {
@@ -137,6 +178,20 @@ val LocalBoqezColors = staticCompositionLocalOf {
         blackText = Color.Unspecified,
         labelsPrimary = Color.Unspecified,
         goldYellow = Color.Unspecified,
+        parchment = Color.Unspecified,
+        parchmentMid = Color.Unspecified,
+        parchmentDark = Color.Unspecified,
+        feltDarkest = Color.Unspecified,
+        feltDark = Color.Unspecified,
+        feltLight = Color.Unspecified,
+        goldLight = Color.Unspecified,
+        goldBase = Color.Unspecified,
+        goldDark = Color.Unspecified,
+        crimsonPale = Color.Unspecified,
+        crimsonLight = Color.Unspecified,
+        crimsonBase = Color.Unspecified,
+        inkWarm = Color.Unspecified,
+        inkWarmDim = Color.Unspecified,
     )
 }
 
@@ -179,4 +234,18 @@ val boqezColors = BoqezColors(
     blackText = BlackText,
     labelsPrimary = LabelsPrimary,
     goldYellow = GoldYellow,
+    parchment = Parchment,
+    parchmentMid = ParchmentMid,
+    parchmentDark = ParchmentDark,
+    feltDarkest = FeltDarkest,
+    feltDark = FeltDark,
+    feltLight = FeltLight,
+    goldLight = GoldLight,
+    goldBase = GoldBase,
+    goldDark = GoldDark,
+    crimsonPale = CrimsonPale,
+    crimsonLight = CrimsonLight,
+    crimsonBase = CrimsonBase,
+    inkWarm = InkWarm,
+    inkWarmDim = InkWarmDim,
 )
