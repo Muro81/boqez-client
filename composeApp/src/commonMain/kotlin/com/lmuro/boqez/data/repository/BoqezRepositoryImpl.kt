@@ -5,8 +5,11 @@ import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.networking.map
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.ReadyStatusRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.mappers.toAuth
 import com.lmuro.boqez.data.remote.mappers.toJoinLobby
@@ -80,5 +83,57 @@ class BoqezRepositoryImpl(
                 lobbyId = lobbyId
             )
         ).map { it.data.toJoinLobby() }
+    }
+
+    override suspend fun changeReady(
+        lobbyId: String,
+        isReady: Boolean
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.changeReady(
+            body = ReadyStatusRequestDto(
+                isReady = isReady,
+                lobbyId = lobbyId
+            )
+        )
+    }
+
+    override suspend fun changeTeam(
+        lobbyId: String,
+        teamId: Int
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.changeTeam(
+            body = ChangeTeamRequestDto(
+                lobbyId = lobbyId,
+                teamId = teamId
+            )
+        )
+    }
+
+    override suspend fun leaveLobby(lobbyId: String): Resource<Any, NetworkError, String?> {
+        return apiService.leaveLobby(
+            body = LobbyWrapperRequestDto(
+                lobbyId = lobbyId
+            )
+        )
+    }
+
+    override suspend fun leaveTeam(lobbyId: String): Resource<Any, NetworkError, String?> {
+        return apiService.leaveTeam(
+            body = LobbyWrapperRequestDto(
+                lobbyId = lobbyId
+            )
+        )
+    }
+
+    override suspend fun changeGameType(
+        lobbyId: String,
+        gameType: GameType
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.changeGameType(
+            body = ChangeGameTypeRequestDto(
+                lobbyId = lobbyId,
+                gameType = gameType
+            )
+        )
     }
 }

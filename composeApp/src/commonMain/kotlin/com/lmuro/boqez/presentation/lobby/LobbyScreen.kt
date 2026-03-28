@@ -1,5 +1,6 @@
 package com.lmuro.boqez.presentation.lobby
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -22,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
+import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.PrimaryButton
 import com.lmuro.boqez.theme.BoqezThemeProvider
@@ -36,11 +36,7 @@ fun LobbyScreen(
         showSnackBar(it)
     }
     val state by viewModel.stateFlow.collectAsState()
-    val isOwner = state.ownerId == state.userId
-    val teamA = state.players.filter { it.teamId == 1 }
-    val teamB = state.players.filter { it.teamId == 2 }
-    val noTeam = state.players.filter { it.teamId == null }
-    val myTeam = state.players.find { it.userId == state.userId }?.teamId
+
 
     BaseContentView(
         state = state
@@ -81,14 +77,25 @@ fun LobbyScreen(
                         .border(1.dp, BoqezThemeProvider.colors.inkBase)
                         .padding(10.dp)
                 ) {
-                    teamA.forEach { player ->
-                        Text(
-                            text = player.username
-                        )
+                    state.teamA.forEach { player ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(BoqezThemeProvider.colors.primaryLightest)
+                        ) {
+                            Text(
+                                text = player.username,
+                                color = BoqezThemeProvider.colors.inkBase
+                            )
+                        }
                     }
-                    if(myTeam != 1 && teamA.size < 2){
+                    if (state.myTeamId != 1 && state.teamA.size < 2) {
                         Text(
-                            text = "Join team A"
+                            text = "Join team A",
+                            modifier = Modifier
+                                .noRippleClickable {
+                                    viewModel.onEvent(LobbyEvent.OnTeamChange(1))
+                                }
                         )
                     }
                 }
@@ -99,14 +106,25 @@ fun LobbyScreen(
                         .border(1.dp, BoqezThemeProvider.colors.inkBase)
                         .padding(10.dp)
                 ) {
-                    teamB.forEach { player ->
-                        Text(
-                            text = player.username
-                        )
+                    state.teamB.forEach { player ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(BoqezThemeProvider.colors.skyLightest)
+                        ) {
+                            Text(
+                                text = player.username,
+                                color = BoqezThemeProvider.colors.inkBase
+                            )
+                        }
                     }
-                    if(myTeam != 2 && teamB.size < 2){
+                    if (state.myTeamId != 2 && state.teamB.size < 2) {
                         Text(
-                            text = "Join team B"
+                            text = "Join team B",
+                            modifier = Modifier
+                                .noRippleClickable {
+                                    viewModel.onEvent(LobbyEvent.OnTeamChange(2))
+                                }
                         )
                     }
                 }
@@ -114,27 +132,41 @@ fun LobbyScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .border(1.dp, BoqezThemeProvider.colors.inkBase)
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                noTeam.forEach { player ->
-                    Text(
-                        text = player.username
-                    )
+                state.noTeam.forEach { player ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(BoqezThemeProvider.colors.skyLightest)
+                    ) {
+                        Text(
+                            text = player.username,
+                            color = BoqezThemeProvider.colors.primaryBase
+                        )
+                    }
                 }
-                if(myTeam != null){
+                if (state.myTeamId != null) {
                     Text(
-                        text = "Leave team"
+                        text = "Leave team",
+                        modifier = Modifier
+                            .noRippleClickable {
+                                viewModel.onEvent(LobbyEvent.OnTeamChange(null))
+                            }
                     )
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(
                 onClick = {
-                    viewModel.onEvent(if (isOwner) LobbyEvent.OnStartGame else LobbyEvent.OnReadyChange)
+                    viewModel.onEvent(if (state.isOwner) LobbyEvent.OnStartGame else LobbyEvent.OnReadyChange)
                 },
-                isEnabled = (isOwner && state.players.all { it.isReady }) || !isOwner
+                isEnabled = (state.isOwner && state.canStartGame) || !state.isOwner
             ) {
                 Text(
-                    text = if (isOwner) "Start" else "Ready"
+                    text = if (state.isOwner) "Start" else "Ready"
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
