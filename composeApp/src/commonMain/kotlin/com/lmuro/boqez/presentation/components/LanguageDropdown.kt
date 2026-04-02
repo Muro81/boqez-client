@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -45,20 +46,23 @@ fun LanguageDropdown(
         OutlinedButton(
             onClick = { expanded = true },
             shape = RoundedCornerShape(8.dp),
-            border = BorderStroke(2.dp, BoqezThemeProvider.colors.primaryBase),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+            border = BorderStroke(1.dp, BoqezThemeProvider.colors.goldBase),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = BoqezThemeProvider.colors.feltLight
+            )
         ) {
             Text(
                 text = "${selectedLanguage.flagCode.countryCodeToFlag()} ${selectedLanguage.tag.uppercase()}",
                 style = BoqezThemeProvider.typography.interSemiBold18,
-                color = BoqezThemeProvider.colors.primaryDarkest
+                color = BoqezThemeProvider.colors.goldLight
             )
             Spacer(modifier = Modifier.width(6.dp))
             Icon(
                 imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
-                tint = BoqezThemeProvider.colors.primaryDarkest
+                tint = BoqezThemeProvider.colors.goldLight
             )
         }
 
@@ -66,7 +70,8 @@ fun LanguageDropdown(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            containerColor = BoqezThemeProvider.colors.white
+            containerColor = BoqezThemeProvider.colors.feltLight,
+            border = BorderStroke(1.dp, BoqezThemeProvider.colors.goldBase)
         ) {
             languages.forEach { language ->
                 DropdownMenuItem(
@@ -80,7 +85,7 @@ fun LanguageDropdown(
                             Text(
                                 text = stringResource(language.displayName),
                                 style = BoqezThemeProvider.typography.interMedium14,
-                                color = BoqezThemeProvider.colors.primaryDarkest
+                                color = BoqezThemeProvider.colors.goldLight
                             )
                         }
                     },
@@ -93,7 +98,7 @@ fun LanguageDropdown(
                             Icon(
                                 imageVector = Icons.Default.Check,
                                 contentDescription = null,
-                                tint = BoqezThemeProvider.colors.primaryBase,
+                                tint = BoqezThemeProvider.colors.goldLight,
                                 modifier = Modifier.size(16.dp)
                             )
                         }

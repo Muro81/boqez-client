@@ -48,9 +48,11 @@ data class BoqezTypography(
     val cinzelBlack40: TextStyle,
     val cinzelBlack48: TextStyle,
     // ── EB Garamond (body / italic) ─────────────────────────────────────────
+    val garamondRegular10: TextStyle,
     val garamondRegular14: TextStyle,
     val garamondRegular16: TextStyle,
     val garamondRegular18: TextStyle,
+    val garamondItalic12: TextStyle,
     val garamondItalic14: TextStyle,
     val garamondItalic16: TextStyle,
     val garamondMedium14: TextStyle,
@@ -105,6 +107,8 @@ val LocalBoqezTypography = staticCompositionLocalOf {
         garamondMedium16 = TextStyle.Default,
         garamondSemiBold14 = TextStyle.Default,
         garamondSemiBold16 = TextStyle.Default,
+        garamondItalic12 = TextStyle.Default,
+        garamondRegular10 = TextStyle.Default
     )
 }
 
@@ -153,6 +157,7 @@ fun provideBoqezTypography(): BoqezTypography {
         cinzelBlack40 = TextStyle(fontFamily = cinzel, fontWeight = FontWeight.Black, fontSize = 40.sp, letterSpacing = 3.sp),
         cinzelBlack48 = TextStyle(fontFamily = cinzel, fontWeight = FontWeight.Black, fontSize = 48.sp, letterSpacing = 4.sp),
         // ── EB Garamond ──────────────────────────────────────────────────────
+        garamondItalic12 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 12.sp),
         garamondRegular14 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 14.sp),
         garamondRegular16 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 16.sp),
         garamondRegular18 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 18.sp),
@@ -162,5 +167,6 @@ fun provideBoqezTypography(): BoqezTypography {
         garamondMedium16 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Medium, fontSize = 16.sp),
         garamondSemiBold14 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
         garamondSemiBold16 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.SemiBold, fontSize = 16.sp),
+        garamondRegular10 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 10.sp)
     )
 }

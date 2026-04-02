@@ -50,12 +50,12 @@ fun BaseContentView(
         ) {
             content()
             if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxSize().background(BoqezThemeProvider.colors.white)) {
+                Box(modifier = Modifier.fillMaxSize().background(BoqezThemeProvider.colors.parchment)) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(
                             alignment = Alignment.Center
                         ),
-                        color = BoqezThemeProvider.colors.primaryBase
+                        color = BoqezThemeProvider.colors.goldDark
                     )
                 }
             }

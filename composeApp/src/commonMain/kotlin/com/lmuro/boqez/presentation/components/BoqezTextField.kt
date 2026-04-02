@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,7 @@ fun BoqezTextField(
     label: String = "",
     placeHolder: String,
     errorMessage: String = "",
-    isPassword : Boolean = false,
+    isPassword: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit
@@ -48,18 +49,19 @@ fun BoqezTextField(
         isPassword && !passwordVisible -> PasswordVisualTransformation()
         else -> VisualTransformation.None
     }
+    var isFocused by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
-    ){
-        if(value.isNotEmpty())
-        Text(
-            text = label,
-            color = BoqezThemeProvider.colors.inkBase,
-            style = BoqezThemeProvider.typography.interRegular14
-        )
+    ) {
+        if (value.isNotEmpty())
+            Text(
+                text = label,
+                color = BoqezThemeProvider.colors.goldDark,
+                style = BoqezThemeProvider.typography.cinzelSemiBold14
+            )
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
@@ -72,12 +74,14 @@ fun BoqezTextField(
                 )
                 .border(
                     1.dp,
-                    if (isError) BoqezThemeProvider.colors.redBase else BoqezThemeProvider.colors.skyLighter,
+                    if (isError) BoqezThemeProvider.colors.crimsonLight else if (isFocused) BoqezThemeProvider.colors.goldBase else BoqezThemeProvider.colors.parchmentDark,
                     RoundedCornerShape(8.dp)
-                ),
+                ).onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
+                },
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            textStyle = BoqezThemeProvider.typography.interRegular14,
+            textStyle = BoqezThemeProvider.typography.garamondItalic14,
             singleLine = true,
             visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
@@ -89,8 +93,8 @@ fun BoqezTextField(
                     if (value.isEmpty()) {
                         Text(
                             text = placeHolder,
-                            color = BoqezThemeProvider.colors.inkBase,
-                            style = BoqezThemeProvider.typography.interRegular14,
+                            color = BoqezThemeProvider.colors.inkWarmDim,
+                            style = BoqezThemeProvider.typography.garamondItalic14,
                             modifier = Modifier.align(Alignment.CenterStart)
                         )
                     }
@@ -110,18 +114,18 @@ fun BoqezTextField(
                             Icon(
                                 imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                                 contentDescription = null,
-                                tint = BoqezThemeProvider.colors.inkBase
+                                tint = BoqezThemeProvider.colors.goldDark
                             )
                         }
                     }
                 }
             },
         )
-        if(errorMessage.isNotEmpty())
-        Text(
-            text = errorMessage,
-            color = BoqezThemeProvider.colors.redBase,
-            style = BoqezThemeProvider.typography.interRegular14
-        )
+        if (errorMessage.isNotEmpty())
+            Text(
+                text = errorMessage,
+                color = BoqezThemeProvider.colors.crimsonLight,
+                style = BoqezThemeProvider.typography.garamondRegular14
+            )
     }
 }

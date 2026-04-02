@@ -11,16 +11,19 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.theme.BoqezThemeProvider
 
 @Composable
 fun PrimaryButton(
     onClick: () -> Unit,
-    containerColor: Color = BoqezThemeProvider.colors.primaryDarkest,
-    contentColor: Color = BoqezThemeProvider.colors.white,
+    containerColor: Color = BoqezThemeProvider.colors.crimsonBase,
+    contentColor: Color = BoqezThemeProvider.colors.goldLight,
     shape: Shape = RoundedCornerShape(8.dp),
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
@@ -38,6 +41,15 @@ fun PrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
+            .dropShadow(
+                shape = shape,
+                shadow = Shadow(
+                    color = BoqezThemeProvider.colors.crimsonBase.copy(alpha = 0.4f),
+                    radius = 18.dp,
+                    spread = 0.dp,
+                    offset = DpOffset(x = 0.dp, y = 4.dp)
+                )
+            )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
