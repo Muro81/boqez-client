@@ -29,5 +29,7 @@
     <string name="or">Or</string>
     <string name="confirm_password">Potvrdite lozinku</string>
     <string name="hint_confirm_password">Potvrdite lozinku:</string>
-
+    <string name="register_title">NAPRAVI NALOG</string>
+    <string name="register_desc">Pridruzi se stolu</string>
+    <string name ="your_details">VAŠE INFORMACIJE</string>
 </resources>

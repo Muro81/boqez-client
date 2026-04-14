@@ -29,5 +29,8 @@
     <string name="or">Or</string>
     <string name="confirm_password">Confirm password</string>
     <string name="hint_confirm_password">Confirm password:</string>
+    <string name="register_title">CREATE ACCOUNT</string>
+    <string name="register_desc">Join the table</string>
+    <string name ="your_details">YOUR DETAILS</string>
 
 </resources>

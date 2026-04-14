@@ -145,9 +145,6 @@ fun LoginScreen(
                     onClick = {
                         viewModel.onEvent(LoginEvent.OnLoginClick)
                     },
-                    isEnabled = true,
-                    containerColor = BoqezThemeProvider.colors.crimsonBase,
-                    contentColor = BoqezThemeProvider.colors.goldLight
                 ) {
                     Text(
                         text = stringResource(Res.string.login),

@@ -157,7 +157,7 @@ fun provideBoqezTypography(): BoqezTypography {
         cinzelBlack40 = TextStyle(fontFamily = cinzel, fontWeight = FontWeight.Black, fontSize = 40.sp, letterSpacing = 3.sp),
         cinzelBlack48 = TextStyle(fontFamily = cinzel, fontWeight = FontWeight.Black, fontSize = 48.sp, letterSpacing = 4.sp),
         // ── EB Garamond ──────────────────────────────────────────────────────
-        garamondItalic12 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 12.sp),
+        garamondItalic12 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 12.sp, fontStyle = FontStyle.Italic),
         garamondRegular14 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 14.sp),
         garamondRegular16 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 16.sp),
         garamondRegular18 = TextStyle(fontFamily = garamond, fontWeight = FontWeight.Normal, fontSize = 18.sp),
