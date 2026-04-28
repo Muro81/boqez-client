@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import boqez.composeapp.generated.resources.Res
 import boqez.composeapp.generated.resources.app_name
+import boqez.composeapp.generated.resources.play
+import boqez.composeapp.generated.resources.settings
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.PrimaryButton
@@ -81,7 +83,7 @@ fun HomeScreen(
                 }
             ) {
                 Text(
-                    text = "PLAY",
+                    text = stringResource(Res.string.play),
                     style = BoqezThemeProvider.typography.cinzelBold16
                 )
             }
@@ -92,7 +94,7 @@ fun HomeScreen(
                 }
             ) {
                 Text(
-                    text = "SETTINGS",
+                    text = stringResource(Res.string.settings),
                     style = BoqezThemeProvider.typography.cinzelBold16
                 )
             }

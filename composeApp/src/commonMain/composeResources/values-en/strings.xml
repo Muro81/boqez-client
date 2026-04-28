@@ -32,5 +32,7 @@
     <string name="register_title">CREATE ACCOUNT</string>
     <string name="register_desc">Join the table</string>
     <string name ="your_details">YOUR DETAILS</string>
+    <string name ="play">PLAY</string>
+    <string name="settings">SETTINGS</string>
 
 </resources>

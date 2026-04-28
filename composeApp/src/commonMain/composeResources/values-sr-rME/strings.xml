@@ -32,4 +32,6 @@
     <string name="register_title">NAPRAVI NALOG</string>
     <string name="register_desc">Pridruzi se stolu</string>
     <string name ="your_details">VAŠE INFORMACIJE</string>
+    <string name ="play">IGRAJ</string>
+    <string name="settings">PODEŠAVANJA</string>
 </resources>
