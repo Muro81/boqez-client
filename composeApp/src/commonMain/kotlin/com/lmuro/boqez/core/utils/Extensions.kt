@@ -123,3 +123,7 @@ private fun codePointToString(codePoint: Int): String {
     val low = (offset and 0x3FF) + 0xDC00
     return charArrayOf(high.toChar(), low.toChar()).concatToString()
 }
+
+fun String.capitalize() : String {
+    return replaceFirstChar { it.uppercase() }
+}

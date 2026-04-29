@@ -37,4 +37,7 @@
     <string name="create">Create</string>
     <string name="join">Pridruži se</string>
     <string name="hint_code">Unesi kod:</string>
+    <string name ="room_temp">Soba #%s</string>
+    <string name ="player_temp">%s igrača</string>
+
 </resources>

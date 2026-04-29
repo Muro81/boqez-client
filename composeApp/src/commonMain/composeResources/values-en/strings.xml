@@ -37,5 +37,6 @@
     <string name="create">Create</string>
     <string name="join">Join</string>
     <string name="hint_code">Enter code:</string>
-
+    <string name ="room_temp">Room #%s</string>
+    <string name ="player_temp">%s players</string>
 </resources>
