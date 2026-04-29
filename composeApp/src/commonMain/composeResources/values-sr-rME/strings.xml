@@ -34,4 +34,7 @@
     <string name ="your_details">VAŠE INFORMACIJE</string>
     <string name ="play">IGRAJ</string>
     <string name="settings">PODEŠAVANJA</string>
+    <string name="create">Create</string>
+    <string name="join">Pridruži se</string>
+    <string name="hint_code">Unesi kod:</string>
 </resources>

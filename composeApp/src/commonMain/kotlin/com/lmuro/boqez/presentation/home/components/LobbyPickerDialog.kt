@@ -17,10 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import boqez.composeapp.generated.resources.Res
+import boqez.composeapp.generated.resources.create
+import boqez.composeapp.generated.resources.hint_code
+import boqez.composeapp.generated.resources.join
 import com.lmuro.boqez.core.utils.Const.LOBBY_CODE_LENGTH
 import com.lmuro.boqez.presentation.components.BoqezTextField
 import com.lmuro.boqez.presentation.components.PrimaryButton
+import com.lmuro.boqez.presentation.components.SecondaryButton
 import com.lmuro.boqez.theme.BoqezThemeProvider
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LobbyPickerDialog(
@@ -61,24 +67,26 @@ fun LobbyPickerDialog(
                 ) {
                     PrimaryButton(
                         onClick = onLobbyCreate
-                    ){
+                    ) {
                         Text(
-                            text = "Create"
+                            text = stringResource(Res.string.create),
+                            style = BoqezThemeProvider.typography.cinzelBold14
                         )
                     }
 
                     BoqezTextField(
                         value = lobbyCode,
-                        placeHolder = "Enter code:",
+                        placeHolder = stringResource(Res.string.hint_code),
                         onValueChange = onLobbyCodeChanged
                     )
 
-                    PrimaryButton(
+                    SecondaryButton(
                         onClick = onLobbyJoin,
                         isEnabled = lobbyCode.length == LOBBY_CODE_LENGTH
-                    ){
+                    ) {
                         Text(
-                            text = "Join"
+                            text = stringResource(Res.string.join),
+                            style = BoqezThemeProvider.typography.cinzelBold14
                         )
                     }
                 }

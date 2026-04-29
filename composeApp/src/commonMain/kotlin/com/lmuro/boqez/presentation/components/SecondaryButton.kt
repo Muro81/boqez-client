@@ -41,14 +41,16 @@ fun SecondaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
-            .dropShadow(
-                shape = shape,
-                shadow = Shadow(
-                    color = BoqezThemeProvider.colors.crimsonBase.copy(alpha = 0.4f),
-                    radius = 18.dp,
-                    spread = 0.dp,
-                    offset = DpOffset(x = 0.dp, y = 4.dp)
-                )
+            .then(
+                if(isEnabled) Modifier.dropShadow(
+                    shape = shape,
+                    shadow = Shadow(
+                        color = BoqezThemeProvider.colors.crimsonBase.copy(alpha = 0.4f),
+                        radius = 18.dp,
+                        spread = 0.dp,
+                        offset = DpOffset(x = 0.dp, y = 4.dp)
+                    )
+                ) else Modifier
             )
     ) {
         Row(

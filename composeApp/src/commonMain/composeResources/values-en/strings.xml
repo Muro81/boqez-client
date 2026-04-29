@@ -34,5 +34,8 @@
     <string name ="your_details">YOUR DETAILS</string>
     <string name ="play">PLAY</string>
     <string name="settings">SETTINGS</string>
+    <string name="create">Create</string>
+    <string name="join">Join</string>
+    <string name="hint_code">Enter code:</string>
 
 </resources>
