@@ -38,7 +38,6 @@ fun GameTypeCard(
         GameType.TERCULJA -> "3"
     }
     //TODO work on colors here looks like shit
-    //TODO implement custom string formating so it works ffs
     Card(
         modifier = modifier
             .fillMaxHeight(),
