@@ -39,4 +39,11 @@
     <string name="hint_code">Enter code:</string>
     <string name ="room_temp">Room #%1$s</string>
     <string name ="player_temp">%1$s players</string>
+    <string name ="teams">TEAMS</string>
+    <string name ="spectators">SPECTATORS</string>
+    <string name ="join_spectators">Join spectators</string>
+    <string name ="join_temp">Join %1$s</string>
+    <string name ="start">Start</string>
+    <string name ="ready">Ready</string>
+
 </resources>

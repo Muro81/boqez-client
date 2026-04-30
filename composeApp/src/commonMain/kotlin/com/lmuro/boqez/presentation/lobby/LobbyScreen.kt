@@ -17,18 +17,17 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import boqez.composeapp.generated.resources.Res
 import boqez.composeapp.generated.resources.room_temp
+import boqez.composeapp.generated.resources.spectators
+import boqez.composeapp.generated.resources.teams
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.core.utils.capitalize
@@ -36,6 +35,8 @@ import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.PrimaryButton
 import com.lmuro.boqez.presentation.lobby.components.GameTypeCard
+import com.lmuro.boqez.presentation.lobby.components.SpectatorList
+import com.lmuro.boqez.presentation.lobby.components.TeamList
 import com.lmuro.boqez.theme.BoqezThemeProvider
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,7 +51,11 @@ fun LobbyScreen(
     }
     val state by viewModel.stateFlow.collectAsState()
 
-
+    val maxTeamSize = when (state.gameType) {
+        GameType.BRISKULA, GameType.TRESETA -> 2
+        GameType.TERCULJA -> 3
+        null -> 0
+    }
     BaseContentView(
         state = state
     ) {
@@ -71,7 +76,7 @@ fun LobbyScreen(
             ) {
                 Text(
                     text = state.gameType?.gameName?.capitalize() ?: "",
-                    style = BoqezThemeProvider.typography.cinzelBold32,
+                    style = BoqezThemeProvider.typography.cinzelBold24,
                     color = BoqezThemeProvider.colors.crimsonBase
                 )
 
@@ -87,13 +92,13 @@ fun LobbyScreen(
                             RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 10.dp, vertical = 5.dp)
-                        .noRippleClickable{
-                           //TODO add copy text to clipboard
+                        .noRippleClickable {
+                            //TODO add copy text to clipboard
                         }
 
                 ) {
                     Text(
-                        text = stringResource(Res.string.room_temp,state.lobbyId).uppercase(),
+                        text = stringResource(Res.string.room_temp, state.lobbyId).uppercase(),
                         style = BoqezThemeProvider.typography.cinzelRegular14,
                         color = BoqezThemeProvider.colors.goldDark
                     )
@@ -121,131 +126,144 @@ fun LobbyScreen(
                 color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
             )
             //Game type selector section
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                GameType.entries.forEach { type ->
-                    GameTypeCard(
-                        modifier = Modifier.weight(1f),
-                        type = type,
-                        isSelected = type == state.gameType
-                    ){
-                        viewModel.onEvent(LobbyEvent.OnChangeGameType(type))
+            if (state.isOwner) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    GameType.entries.forEach { type ->
+                        GameTypeCard(
+                            modifier = Modifier.weight(1f),
+                            type = type,
+                            isSelected = type == state.gameType
+                        ) {
+                            viewModel.onEvent(LobbyEvent.OnChangeGameType(type))
+                        }
                     }
                 }
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
+                )
             }
-
-            HorizontalDivider(
-                modifier = Modifier.weight(1f),
-                color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
-            )
             //Teams section
+            if (state.gameType != null)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
+                    )
+                    Text(
+                        text = stringResource(Res.string.teams),
+                        style = BoqezThemeProvider.typography.cinzelBold20,
+                        color = BoqezThemeProvider.colors.goldDark
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
+                    )
+                }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, BoqezThemeProvider.colors.inkBase)
-                        .padding(10.dp)
-                ) {
-                    state.teamA.forEach { player ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(BoqezThemeProvider.colors.primaryLightest)
-                        ) {
-                            Text(
-                                text = player.username,
-                                color = BoqezThemeProvider.colors.inkBase
-                            )
-                        }
-                    }
-                    if (state.myTeamId != 1 && state.teamA.size < 2) {
-                        Text(
-                            text = "Join team A",
-                            modifier = Modifier
-                                .noRippleClickable {
-                                    viewModel.onEvent(LobbyEvent.OnTeamChange(1))
-                                }
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, BoqezThemeProvider.colors.inkBase)
-                        .padding(10.dp)
-                ) {
-                    state.teamB.forEach { player ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(BoqezThemeProvider.colors.skyLightest)
-                        ) {
-                            Text(
-                                text = player.username,
-                                color = BoqezThemeProvider.colors.inkBase
-                            )
-                        }
-                    }
-                    if (state.myTeamId != 2 && state.teamB.size < 2) {
-                        Text(
-                            text = "Join team B",
-                            modifier = Modifier
-                                .noRippleClickable {
-                                    viewModel.onEvent(LobbyEvent.OnTeamChange(2))
-                                }
-                        )
-                    }
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, BoqezThemeProvider.colors.inkBase)
-                    .padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                state.noTeam.forEach { player ->
-                    Row(
+                if (state.gameType == GameType.TERCULJA) {
+                    TeamList(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(BoqezThemeProvider.colors.skyLightest)
-                    ) {
-                        Text(
-                            text = player.username,
-                            color = BoqezThemeProvider.colors.primaryBase
-                        )
-                    }
-                }
-                if (state.myTeamId != null) {
-                    Text(
-                        text = "Leave team",
+                            .weight(1f),
+                        teamName = "KUPA",
+                        headerColor = BoqezThemeProvider.colors.crimsonBase,
+                        maxTeamSize = maxTeamSize,
+                        players = state.players,
+                        currentUserId = state.userId,
+                        ownerId = state.ownerId,
+                        canJoinTeam = false,
+                        onJoinTeam = {},
+                        onKickPlayer = {}
+                    )
+                } else if (state.gameType != null) {
+                    TeamList(
                         modifier = Modifier
-                            .noRippleClickable {
-                                viewModel.onEvent(LobbyEvent.OnTeamChange(null))
-                            }
+                            .weight(1f),
+                        teamName = "KUPA",
+                        headerColor = BoqezThemeProvider.colors.crimsonBase,
+                        maxTeamSize = maxTeamSize,
+                        players = state.teamA,
+                        currentUserId = state.userId,
+                        ownerId = state.ownerId,
+                        canJoinTeam = state.myTeamId != 1,
+                        onJoinTeam = {
+                            viewModel.onEvent(LobbyEvent.OnTeamChange(1))
+                        },
+                        onKickPlayer = {}
+                    )
+                    TeamList(
+                        modifier = Modifier
+                            .weight(1f),
+                        teamName = "SPADA",
+                        headerColor = BoqezThemeProvider.colors.feltLight,
+                        maxTeamSize = maxTeamSize,
+                        players = state.teamB,
+                        currentUserId = state.userId,
+                        ownerId = state.ownerId,
+                        canJoinTeam = state.myTeamId != 2,
+                        onJoinTeam = {
+                            viewModel.onEvent(LobbyEvent.OnTeamChange(2))
+                        },
+                        onKickPlayer = {}
                     )
                 }
             }
-            Spacer(modifier = Modifier.weight(1f))
-            PrimaryButton(
-                onClick = {
-                    viewModel.onEvent(if (state.isOwner) LobbyEvent.OnStartGame else LobbyEvent.OnReadyChange)
-                },
-                isEnabled = (state.isOwner && state.canStartGame) || !state.isOwner
+            //Spectator section
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (state.isOwner) "Start" else "Ready"
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
                 )
+                Text(
+                    text = stringResource(Res.string.spectators),
+                    style = BoqezThemeProvider.typography.cinzelBold20,
+                    color = BoqezThemeProvider.colors.goldDark
+                )
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = BoqezThemeProvider.colors.goldBase.copy(alpha = 0.35f)
+                )
+            }
+
+            SpectatorList(
+                spectators = state.players.filter { it.teamId == null },
+                currentUserId = state.userId
+            ) {
+                viewModel.onEvent(LobbyEvent.OnTeamChange(null))
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            if (state.myTeamId != null) {
+                PrimaryButton(
+                    onClick = {
+                        viewModel.onEvent(if (state.isOwner) LobbyEvent.OnStartGame else LobbyEvent.OnReadyChange)
+                    },
+                    isEnabled = (state.isOwner && state.canStartGame) || !state.isOwner
+                ) {
+                    Text(
+                        text = if (state.isOwner) "Start" else "Ready"
+                    )
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
         }

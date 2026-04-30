@@ -39,5 +39,11 @@
     <string name="hint_code">Unesi kod:</string>
     <string name ="room_temp">Soba #%1$s</string>
     <string name ="player_temp">%1$s igrača</string>
+    <string name ="teams">TIMOVI</string>
+    <string name ="spectators">GLEDAOCI</string>
+    <string name ="join_spectators">Pridruži se gledaocima</string>
+    <string name ="join_temp">Pridruži se %1$s</string>
+    <string name ="start">Počni</string>
+    <string name ="ready">Spreman</string>
 
 </resources>

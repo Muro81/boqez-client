@@ -35,7 +35,6 @@ fun BaseContentView(
             .noRippleClickable {
                 focusManager.clearFocus()
             }
-        //TODO add topbar and navigation bar handling
     }
 
     Scaffold(

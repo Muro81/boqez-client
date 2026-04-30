@@ -1,6 +1,6 @@
 package com.lmuro.boqez.presentation.lobby.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -40,7 +40,8 @@ fun GameTypeCard(
     //TODO work on colors here looks like shit
     Card(
         modifier = modifier
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .border(1.dp, BoqezThemeProvider.colors.goldDark, RoundedCornerShape(12.dp)),
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
         ),
@@ -55,7 +56,7 @@ fun GameTypeCard(
         ) {
             Text(
                 text = type.gameName.capitalize(),
-                style = BoqezThemeProvider.typography.garamondMedium14,
+                style = BoqezThemeProvider.typography.cinzelBold20,
                 color = textColor
             )
             Text(
