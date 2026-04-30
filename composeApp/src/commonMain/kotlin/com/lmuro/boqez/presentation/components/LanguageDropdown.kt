@@ -54,7 +54,7 @@ fun LanguageDropdown(
         ) {
             Text(
                 text = "${selectedLanguage.flagCode.countryCodeToFlag()} ${selectedLanguage.tag.uppercase()}",
-                style = BoqezThemeProvider.typography.interSemiBold18,
+                style = BoqezThemeProvider.typography.garamondSemiBold18,
                 color = BoqezThemeProvider.colors.goldLight
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -84,7 +84,7 @@ fun LanguageDropdown(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(language.displayName),
-                                style = BoqezThemeProvider.typography.interMedium14,
+                                style = BoqezThemeProvider.typography.garamondMedium14,
                                 color = BoqezThemeProvider.colors.goldLight
                             )
                         }

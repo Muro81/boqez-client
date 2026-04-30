@@ -13,19 +13,7 @@ import boqez.composeapp.generated.resources.eb_garamond_medium
 import boqez.composeapp.generated.resources.eb_garamond_regular
 import boqez.composeapp.generated.resources.eb_garamond_regular_italic
 import boqez.composeapp.generated.resources.eb_garamond_semibold
-import boqez.composeapp.generated.resources.inter_bold
-import boqez.composeapp.generated.resources.inter_medium
-import boqez.composeapp.generated.resources.inter_regular
-import boqez.composeapp.generated.resources.inter_semi_bold
 import org.jetbrains.compose.resources.Font
-
-@Composable
-fun InterFontFamily() = FontFamily(
-    Font(Res.font.inter_regular, weight = FontWeight.Normal),
-    Font(Res.font.inter_medium, weight = FontWeight.Medium),
-    Font(Res.font.inter_semi_bold, weight = FontWeight.SemiBold),
-    Font(Res.font.inter_bold, weight = FontWeight.Bold)
-)
 
 // Display font — headings, titles, button labels, team names, field labels
 @Composable
