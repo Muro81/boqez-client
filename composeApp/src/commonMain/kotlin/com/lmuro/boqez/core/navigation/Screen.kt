@@ -20,9 +20,6 @@ sealed interface Screen {
     data object HomeScreen : Screen
 
     @Serializable
-    data object LobbyCreateScreen : Screen
-
-    @Serializable
     data class LobbyScreen(
         val lobbyId: String,
         val gameType: GameType? = null,
