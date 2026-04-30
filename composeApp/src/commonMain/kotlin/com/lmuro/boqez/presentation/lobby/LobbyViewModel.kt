@@ -10,11 +10,13 @@ import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.WebSocketMessageType
+import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameTypeResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketOwnerTransferResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketTeamChangeResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketUserReadyResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketUserResponse
+import com.lmuro.boqez.data.remote.mappers.toTeam
 import com.lmuro.boqez.data.remote.services.WSService
 import com.lmuro.boqez.domain.model.LobbyUser
 import com.lmuro.boqez.domain.repository.BoqezRepository
@@ -53,12 +55,14 @@ class LobbyViewModel(
     init {
         val args = savedStateHandle.toRoute<Screen.LobbyScreen>(typeMap = lobbyScreenTypeMap)
         val players = args.players.ifEmpty {
-            listOf(LobbyUser(
-                userId = args.userId,
-                username = args.username,
-                isReady = true,
-                teamId = null
-            ))
+            listOf(
+                LobbyUser(
+                    userId = args.userId,
+                    username = args.username,
+                    isReady = true,
+                    teamId = null
+                )
+            )
         }
         state.update {
             it.copy(
@@ -127,7 +131,10 @@ class LobbyViewModel(
                         state.update { current ->
                             current.copy(
                                 players = current.players.map { player ->
-                                    if (player.userId == data.userId) player.copy(teamId = data.teamId, isReady = false)
+                                    if (player.userId == data.userId) player.copy(
+                                        teamId = data.teamId,
+                                        isReady = false
+                                    )
                                     else player
                                 }
                             )
@@ -139,7 +146,10 @@ class LobbyViewModel(
                         state.update { current ->
                             current.copy(
                                 players = current.players.map { player ->
-                                    if (player.userId == data.userId) player.copy(teamId = null, isReady = false)
+                                    if (player.userId == data.userId) player.copy(
+                                        teamId = null,
+                                        isReady = false
+                                    )
                                     else player
                                 }
                             )
@@ -165,11 +175,34 @@ class LobbyViewModel(
                         state.update {
                             it.copy(
                                 gameType = data.gameType,
-                                players = it.players.map { player -> player.copy(teamId = null, isReady = false) }
+                                players = it.players.map { player ->
+                                    player.copy(
+                                        teamId = null,
+                                        isReady = false
+                                    )
+                                }
                             )
                         }
                     }
 //                    WebSocketMessageType.KICK_PLAYER -> TODO()
+                    WebSocketMessageType.START_GAME -> {
+                        val data =
+                            Json.decodeFromJsonElement<SocketGameStartResponse>(message.payload)
+                        viewModelScope.launch {
+                            navigator.navigateTo(
+                                destination = Screen.GameScreen(
+                                    gameId = data.gameId,
+                                    gameType = data.gameType,
+                                    teams = data.teams.map { it.toTeam(state.value.userId) },
+                                    currentPlayerId = data.currentPlayerId,
+                                    deck = data.deck,
+                                    discardPile = data.discardPile,
+                                    trumpSuit = data.trumpSuit
+                                )
+                            )
+                        }
+                    }
+
                     else -> {
                         Napier.v("Unhandled socket message.")
                     }
