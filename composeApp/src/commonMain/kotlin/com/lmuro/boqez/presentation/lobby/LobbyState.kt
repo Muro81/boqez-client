@@ -24,7 +24,7 @@ data class LobbyState(
 
     val canStartGame: Boolean
         get() {
-            val allReady = players.isNotEmpty() && players.all { it.isReady }
+            val allReady = players.isNotEmpty() && players.all { (it.isReady || it.userId == ownerId) }
 
             val hasEnoughPlayers = when (gameType) {
                 GameType.BRISKULA,

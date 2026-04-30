@@ -191,13 +191,7 @@ class LobbyViewModel(
                         viewModelScope.launch {
                             navigator.navigateTo(
                                 destination = Screen.GameScreen(
-                                    gameId = data.gameId,
-                                    gameType = data.gameType,
-                                    teams = data.teams.map { it.toTeam(state.value.userId) },
-                                    currentPlayerId = data.currentPlayerId,
-                                    deck = data.deck,
-                                    discardPile = data.discardPile,
-                                    trumpSuit = data.trumpSuit
+                                    gameId = data.gameId
                                 )
                             )
                         }
@@ -281,7 +275,15 @@ class LobbyViewModel(
     }
 
     private fun startGame() {
-
+        viewModelScope.launch {
+            state.update { it.copy(isLoading = true) }
+            repository.startGame(lobbyId = state.value.lobbyId)
+                .onError { networkError, message ->
+                val decide = message ?: networkError.toString()
+                _snackBarChannel.send(decide)
+            }
+            state.update { it.copy(isLoading = false) }
+        }
     }
 
     override fun onCleared() {

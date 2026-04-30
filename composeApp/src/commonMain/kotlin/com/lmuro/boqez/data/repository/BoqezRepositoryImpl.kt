@@ -136,4 +136,10 @@ class BoqezRepositoryImpl(
             )
         )
     }
+
+    override suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?> {
+        return apiService.startGame(
+            body = LobbyWrapperRequestDto(lobbyId = lobbyId)
+        )
+    }
 }

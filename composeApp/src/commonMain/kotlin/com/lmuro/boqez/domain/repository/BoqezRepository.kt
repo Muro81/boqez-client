@@ -43,4 +43,5 @@ interface BoqezRepository {
         lobbyId: String,
         gameType: GameType
     ): Resource<Any, NetworkError, String?>
-}
+
+    suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?>}

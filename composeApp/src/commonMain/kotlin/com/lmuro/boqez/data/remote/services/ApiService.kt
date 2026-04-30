@@ -88,4 +88,10 @@ class ApiService(
         )
     }
 
+    suspend fun startGame(body : LobbyWrapperRequestDto) : Resource<Any, NetworkError, String?>{
+        return post(
+            "/api/game/create",
+            body = body
+        )
+    }
 }

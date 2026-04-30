@@ -246,7 +246,7 @@ fun LobbyScreen(
             }
 
             SpectatorList(
-                spectators = state.players.filter { it.teamId == null },
+                spectators = state.noTeam,
                 currentUserId = state.userId
             ) {
                 viewModel.onEvent(LobbyEvent.OnTeamChange(null))
