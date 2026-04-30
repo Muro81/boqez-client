@@ -127,7 +127,7 @@ class LobbyViewModel(
                         state.update { current ->
                             current.copy(
                                 players = current.players.map { player ->
-                                    if (player.userId == data.userId) player.copy(teamId = data.teamId)
+                                    if (player.userId == data.userId) player.copy(teamId = data.teamId, isReady = false)
                                     else player
                                 }
                             )
@@ -139,7 +139,7 @@ class LobbyViewModel(
                         state.update { current ->
                             current.copy(
                                 players = current.players.map { player ->
-                                    if (player.userId == data.userId) player.copy(teamId = null)
+                                    if (player.userId == data.userId) player.copy(teamId = null, isReady = false)
                                     else player
                                 }
                             )
@@ -164,7 +164,8 @@ class LobbyViewModel(
                             Json.decodeFromJsonElement<SocketGameTypeResponse>(message.payload)
                         state.update {
                             it.copy(
-                                gameType = data.gameType
+                                gameType = data.gameType,
+                                players = it.players.map { player -> player.copy(teamId = null, isReady = false) }
                             )
                         }
                     }

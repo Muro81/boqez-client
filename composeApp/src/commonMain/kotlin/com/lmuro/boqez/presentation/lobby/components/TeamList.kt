@@ -88,7 +88,7 @@ fun TeamList(
                         color = if (player.userId == currentUserId) BoqezThemeProvider.colors.goldLight else BoqezThemeProvider.colors.feltDarkest,
                         style = BoqezThemeProvider.typography.garamondItalic16
                     )
-                    if (player.isReady) {
+                    if (player.isReady || player.userId == ownerId) {
                         Box(
                             modifier = Modifier
                                 .size(16.dp)
