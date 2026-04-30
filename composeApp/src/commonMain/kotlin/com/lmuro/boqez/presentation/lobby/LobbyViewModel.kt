@@ -10,6 +10,7 @@ import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.WebSocketMessageType
+import com.lmuro.boqez.data.local.GameStateCache
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameTypeResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketOwnerTransferResponse
@@ -18,6 +19,7 @@ import com.lmuro.boqez.data.remote.dto.socket.SocketUserReadyResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketUserResponse
 import com.lmuro.boqez.data.remote.mappers.toTeam
 import com.lmuro.boqez.data.remote.services.WSService
+import com.lmuro.boqez.domain.model.GameStartData
 import com.lmuro.boqez.domain.model.LobbyUser
 import com.lmuro.boqez.domain.repository.BoqezRepository
 import com.lmuro.boqez.presentation.base.BaseViewModel
@@ -31,6 +33,7 @@ class LobbyViewModel(
     private val repository: BoqezRepository,
     private val navigator: Navigator,
     private val wsService: WSService,
+    private val gameStateCache : GameStateCache,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<LobbyState, LobbyEvent>() {
     override val initialState: LobbyState = LobbyState()
@@ -189,6 +192,15 @@ class LobbyViewModel(
                         val data =
                             Json.decodeFromJsonElement<SocketGameStartResponse>(message.payload)
                         viewModelScope.launch {
+                            val gameData = GameStartData(
+                                gameType = data.gameType,
+                                teams = data.teams.map { it.toTeam(state.value.userId) },
+                                currentPlayerId = data.currentPlayerId,
+                                deck = data.deck,
+                                discardPile = data.discardPile,
+                                trumpSuit = data.trumpSuit
+                            )
+                            gameStateCache.put(data.gameId, gameData)
                             navigator.navigateTo(
                                 destination = Screen.GameScreen(
                                     gameId = data.gameId
