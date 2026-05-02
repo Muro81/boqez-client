@@ -99,7 +99,7 @@ class HomeViewModel(
         viewModelScope.launch {
             state.update { it.copy(isLoading = true) }
             repository.joinLobby(
-                lobbyId = state.value.lobbyCode
+                lobbyId = state.value.lobbyCode.uppercase()
             ).onSuccess { res ->
                 navigator.navigateTo(
                     destination = Screen.LobbyScreen(
