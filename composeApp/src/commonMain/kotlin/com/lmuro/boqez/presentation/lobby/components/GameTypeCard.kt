@@ -30,9 +30,9 @@ fun GameTypeCard(
     val backgroundColor =
         if (isSelected) BoqezThemeProvider.colors.crimsonBase else BoqezThemeProvider.colors.white
     val textColor =
-        if (isSelected) BoqezThemeProvider.colors.goldLight else BoqezThemeProvider.colors.inkDarkest
+        if (isSelected) BoqezThemeProvider.colors.goldLight else BoqezThemeProvider.colors.feltDarkest
     val supportTextColor =
-        if (isSelected) BoqezThemeProvider.colors.goldDark else BoqezThemeProvider.colors.inkDarkest
+        if (isSelected) BoqezThemeProvider.colors.goldDark else BoqezThemeProvider.colors.feltDarkest
     val playerInfoText = when (type) {
         GameType.BRISKULA, GameType.TRESETA -> "4"
         GameType.TERCULJA -> "3"

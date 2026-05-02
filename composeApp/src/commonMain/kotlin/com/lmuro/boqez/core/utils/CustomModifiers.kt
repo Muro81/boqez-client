@@ -14,8 +14,8 @@ object CustomModifiers {
             Snackbar(
                 snackbarData = snackBarData,
                 containerColor = BoqezThemeProvider.colors.white,
-                contentColor = BoqezThemeProvider.colors.inkBase,
-                actionColor = BoqezThemeProvider.colors.inkBase,
+                contentColor = BoqezThemeProvider.colors.feltDarkest,
+                actionColor = BoqezThemeProvider.colors.feltDarkest,
                 shape = RoundedCornerShape(4.dp)
             )
         }

@@ -54,7 +54,7 @@ fun LobbyPickerDialog(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = null,
-                        tint = BoqezThemeProvider.colors.primaryDarkest
+                        tint = BoqezThemeProvider.colors.feltDarkest
                     )
                 }
                 Column(
