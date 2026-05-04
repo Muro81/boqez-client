@@ -194,16 +194,18 @@ class LobbyViewModel(
                         viewModelScope.launch {
                             val gameData = GameStartData(
                                 gameType = data.gameType,
-                                teams = data.teams.map { it.toTeam(state.value.userId) },
+                                teams = data.teams.map { it.toTeam(state.value.userId,data.hand) },
                                 currentPlayerId = data.currentPlayerId,
                                 deck = data.deck,
                                 discardPile = data.discardPile,
-                                trumpSuit = data.trumpSuit
+                                trumpSuit = data.trumpSuit,
+                                bottomCard = data.bottomCard
                             )
                             gameStateCache.put(data.gameId, gameData)
                             navigator.navigateTo(
                                 destination = Screen.GameScreen(
-                                    gameId = data.gameId
+                                    gameId = data.gameId,
+                                    userId = state.value.userId
                                 )
                             )
                         }

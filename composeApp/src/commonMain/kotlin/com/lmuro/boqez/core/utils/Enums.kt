@@ -113,6 +113,34 @@ object RankSerializer : KSerializer<Rank> {
 }
 
 
+@Serializable(with = GestureSerializer::class)
+enum class Gesture {
+    KNOCK,
+    SLASH,
+    ACE,
+    THREE,
+    KING,
+    KNIGHT,
+    JACK
+}
+
+object GestureSerializer : KSerializer<Gesture> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("Gesture", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Gesture) {
+        encoder.encodeString(value.name.lowercase())
+    }
+
+    override fun deserialize(decoder: Decoder): Gesture {
+        val gesture = decoder.decodeString()
+        return Gesture.entries.firstOrNull {
+            it.name.equals(gesture, ignoreCase = true)
+        } ?: throw IllegalArgumentException("Unknown gesture: $gesture")
+    }
+}
+
+
 
 enum class WebSocketMessageType(val message : String){
     //LOBBY MESSAGES
@@ -138,4 +166,8 @@ enum class WebSocketMessageType(val message : String){
     SWAP_CARD("swap_card"),
     PLAYER_DISCONNECTED("player_disconnect"),
     GESTURE("gesture")
+}
+
+enum class TablePosition{
+    TOP,LEFT,RIGHT
 }

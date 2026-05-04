@@ -4,9 +4,11 @@ import com.lmuro.boqez.core.networking.NetworkError
 import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.networking.map
 import com.lmuro.boqez.core.utils.GameType
+import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ReadyStatusRequestDto
@@ -140,6 +142,18 @@ class BoqezRepositoryImpl(
     override suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?> {
         return apiService.startGame(
             body = LobbyWrapperRequestDto(lobbyId = lobbyId)
+        )
+    }
+
+    override suspend fun sendGesture(
+        gameId: String,
+        gesture: Gesture
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.sendGesture(
+            body = GestureRequestDto(
+                gesture = gesture,
+                gameId = gameId
+            )
         )
     }
 }

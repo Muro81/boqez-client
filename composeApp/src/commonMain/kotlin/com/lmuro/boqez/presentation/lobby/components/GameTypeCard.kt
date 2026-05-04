@@ -28,7 +28,7 @@ fun GameTypeCard(
     onClick: () -> Unit
 ) {
     val backgroundColor =
-        if (isSelected) BoqezThemeProvider.colors.crimsonBase else BoqezThemeProvider.colors.white
+        if (isSelected) BoqezThemeProvider.colors.crimsonBase else BoqezThemeProvider.colors.parchmentMid
     val textColor =
         if (isSelected) BoqezThemeProvider.colors.goldLight else BoqezThemeProvider.colors.feltDarkest
     val supportTextColor =
@@ -37,7 +37,6 @@ fun GameTypeCard(
         GameType.BRISKULA, GameType.TRESETA -> "4"
         GameType.TERCULJA -> "3"
     }
-    //TODO work on colors here looks like shit
     Card(
         modifier = modifier
             .fillMaxHeight()

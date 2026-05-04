@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:viewportWidth="64"
+    android:viewportHeight="64"
+    android:width="64dp"
+    android:height="64dp">
+    <path
+        android:pathData="M54 32A22 22 0 0 1 10 32A22 22 0 0 1 54 32Z"
+        android:strokeColor="#000000"
+        android:strokeWidth="3" />
+    <path
+        android:pathData="M46 32A14 14 0 0 1 18 32A14 14 0 0 1 46 32Z"
+        android:strokeColor="#000000"
+        android:strokeWidth="3" />
+    <path
+        android:pathData="M35 32A3 3 0 0 1 29 32A3 3 0 0 1 35 32Z"
+        android:fillColor="#000000" />
+</vector>

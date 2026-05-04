@@ -3,6 +3,7 @@ package com.lmuro.boqez.domain.repository
 import com.lmuro.boqez.core.networking.NetworkError
 import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.utils.GameType
+import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.domain.model.Auth
 import com.lmuro.boqez.domain.model.LobbyJoin
 import com.lmuro.boqez.domain.model.UserInfo
@@ -44,4 +45,9 @@ interface BoqezRepository {
         gameType: GameType
     ): Resource<Any, NetworkError, String?>
 
-    suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?>}
+    suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?>
+
+    suspend fun sendGesture(gameId: String, gesture: Gesture): Resource<Any, NetworkError, String?>
+}
+
+

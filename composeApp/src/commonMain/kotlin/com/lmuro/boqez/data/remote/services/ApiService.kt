@@ -3,10 +3,12 @@ package com.lmuro.boqez.data.remote.services
 import boqez.composeapp.generated.resources.Res
 import com.lmuro.boqez.core.networking.NetworkError
 import com.lmuro.boqez.core.networking.Resource
+import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.data.remote.dto.DataResponse
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ReadyStatusRequestDto
@@ -91,6 +93,13 @@ class ApiService(
     suspend fun startGame(body : LobbyWrapperRequestDto) : Resource<Any, NetworkError, String?>{
         return post(
             "/api/game/create",
+            body = body
+        )
+    }
+
+    suspend fun sendGesture(body : GestureRequestDto) : Resource<Any, NetworkError,String?>{
+        return post(
+            "/api/game/gesture",
             body = body
         )
     }

@@ -10,7 +10,6 @@ sealed class Player {
 }
 
 @Serializable
-@SerialName("local")
 data class LocalPlayer(
     override val playerId: String,
     override val username: String,
@@ -18,7 +17,6 @@ data class LocalPlayer(
 ) : Player()
 
 @Serializable
-@SerialName("opponent")
 data class OpponentPlayer(
     override val playerId: String,
     override val username: String,

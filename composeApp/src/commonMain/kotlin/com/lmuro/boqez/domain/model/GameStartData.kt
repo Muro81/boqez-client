@@ -9,5 +9,6 @@ data class GameStartData(
     val currentPlayerId: String,
     val deck: List<Card>,
     val discardPile: List<Card>,
-    val trumpSuit: Suit?
+    val trumpSuit: Suit?,
+    val bottomCard : Card?
 )

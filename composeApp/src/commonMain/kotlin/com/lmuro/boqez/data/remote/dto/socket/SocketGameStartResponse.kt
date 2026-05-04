@@ -14,5 +14,7 @@ data class SocketGameStartResponse(
     @SerialName("current_player_id") val currentPlayerId : String,
     @SerialName("deck") val deck : List<Card>,
     @SerialName("discard_pile") val discardPile : List<Card>,
-    @SerialName("trump_suit") val trumpSuit : Suit?
+    @SerialName("trump_suit") val trumpSuit : Suit?,
+    @SerialName("bottom_card") val bottomCard : Card?,
+    @SerialName("hand") val hand : List<Card>
 )

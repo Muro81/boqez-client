@@ -25,8 +25,50 @@ import boqez.composeapp.generated.resources.error_passwords_no_match
 import boqez.composeapp.generated.resources.error_min_3_char
 import boqez.composeapp.generated.resources.error_max_50_char
 import boqez.composeapp.generated.resources.error_username_invalid_chars
+import boqez.composeapp.generated.resources.img_ace_baston
+import boqez.composeapp.generated.resources.img_ace_dinar
+import boqez.composeapp.generated.resources.img_ace_kupa
+import boqez.composeapp.generated.resources.img_ace_spada
+import boqez.composeapp.generated.resources.img_five_baston
+import boqez.composeapp.generated.resources.img_five_dinar
+import boqez.composeapp.generated.resources.img_five_kupa
+import boqez.composeapp.generated.resources.img_five_spada
+import boqez.composeapp.generated.resources.img_four_baston
+import boqez.composeapp.generated.resources.img_four_dinar
+import boqez.composeapp.generated.resources.img_four_kupa
+import boqez.composeapp.generated.resources.img_four_spada
+import boqez.composeapp.generated.resources.img_jack_baston
+import boqez.composeapp.generated.resources.img_jack_dinar
+import boqez.composeapp.generated.resources.img_jack_kupa
+import boqez.composeapp.generated.resources.img_jack_spada
+import boqez.composeapp.generated.resources.img_king_baston
+import boqez.composeapp.generated.resources.img_king_dinar
+import boqez.composeapp.generated.resources.img_king_kupa
+import boqez.composeapp.generated.resources.img_king_spada
+import boqez.composeapp.generated.resources.img_knight_baston
+import boqez.composeapp.generated.resources.img_knight_dinar
+import boqez.composeapp.generated.resources.img_knight_kupa
+import boqez.composeapp.generated.resources.img_knight_spada
+import boqez.composeapp.generated.resources.img_seven_baston
+import boqez.composeapp.generated.resources.img_seven_dinar
+import boqez.composeapp.generated.resources.img_seven_kupa
+import boqez.composeapp.generated.resources.img_seven_spada
+import boqez.composeapp.generated.resources.img_six_baston
+import boqez.composeapp.generated.resources.img_six_dinar
+import boqez.composeapp.generated.resources.img_six_kupa
+import boqez.composeapp.generated.resources.img_six_spada
+import boqez.composeapp.generated.resources.img_three_baston
+import boqez.composeapp.generated.resources.img_three_dinar
+import boqez.composeapp.generated.resources.img_three_kupa
+import boqez.composeapp.generated.resources.img_three_spada
+import boqez.composeapp.generated.resources.img_two_baston
+import boqez.composeapp.generated.resources.img_two_dinar
+import boqez.composeapp.generated.resources.img_two_kupa
+import boqez.composeapp.generated.resources.img_two_spada
+import com.lmuro.boqez.domain.model.Card
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.getString
 
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
@@ -126,4 +168,69 @@ private fun codePointToString(codePoint: Int): String {
 
 fun String.capitalize() : String {
     return replaceFirstChar { it.uppercase() }
+}
+
+fun Card.toDrawableResource(): DrawableResource {
+    val rank = when (rank) {
+        Rank.ACE    -> "ace"
+        Rank.TWO    -> "two"
+        Rank.THREE  -> "three"
+        Rank.FOUR   -> "four"
+        Rank.FIVE   -> "five"
+        Rank.SIX    -> "six"
+        Rank.SEVEN  -> "seven"
+        Rank.JACK   -> "jack"
+        Rank.KNIGHT -> "knight"
+        Rank.KING   -> "king"
+    }
+
+    val suit = when (suit) {
+        Suit.KUPA   -> "kupa"
+        Suit.DINAR  -> "dinar"
+        Suit.BASTON -> "baston"
+        Suit.SPADA  -> "spada"
+    }
+
+    return when ("${rank}_${suit}") {
+        "ace_baston"    -> Res.drawable.img_ace_baston
+        "ace_kupa"      -> Res.drawable.img_ace_kupa
+        "ace_dinar"     -> Res.drawable.img_ace_dinar
+        "ace_spada"     -> Res.drawable.img_ace_spada
+        "two_baston"    -> Res.drawable.img_two_baston
+        "two_kupa"      -> Res.drawable.img_two_kupa
+        "two_dinar"     -> Res.drawable.img_two_dinar
+        "two_spada"     -> Res.drawable.img_two_spada
+        "three_baston"  -> Res.drawable.img_three_baston
+        "three_kupa"    -> Res.drawable.img_three_kupa
+        "three_dinar"   -> Res.drawable.img_three_dinar
+        "three_spada"   -> Res.drawable.img_three_spada
+        "four_baston"   -> Res.drawable.img_four_baston
+        "four_kupa"     -> Res.drawable.img_four_kupa
+        "four_dinar"    -> Res.drawable.img_four_dinar
+        "four_spada"    -> Res.drawable.img_four_spada
+        "five_baston"   -> Res.drawable.img_five_baston
+        "five_kupa"     -> Res.drawable.img_five_kupa
+        "five_dinar"    -> Res.drawable.img_five_dinar
+        "five_spada"    -> Res.drawable.img_five_spada
+        "six_baston"    -> Res.drawable.img_six_baston
+        "six_kupa"      -> Res.drawable.img_six_kupa
+        "six_dinar"     -> Res.drawable.img_six_dinar
+        "six_spada"     -> Res.drawable.img_six_spada
+        "seven_baston"  -> Res.drawable.img_seven_baston
+        "seven_kupa"    -> Res.drawable.img_seven_kupa
+        "seven_dinar"   -> Res.drawable.img_seven_dinar
+        "seven_spada"   -> Res.drawable.img_seven_spada
+        "jack_baston"   -> Res.drawable.img_jack_baston
+        "jack_kupa"     -> Res.drawable.img_jack_kupa
+        "jack_dinar"    -> Res.drawable.img_jack_dinar
+        "jack_spada"    -> Res.drawable.img_jack_spada
+        "knight_baston" -> Res.drawable.img_knight_baston
+        "knight_kupa"   -> Res.drawable.img_knight_kupa
+        "knight_dinar"  -> Res.drawable.img_knight_dinar
+        "knight_spada"  -> Res.drawable.img_knight_spada
+        "king_baston"   -> Res.drawable.img_king_baston
+        "king_kupa"     -> Res.drawable.img_king_kupa
+        "king_dinar"    -> Res.drawable.img_king_dinar
+        else            -> Res.drawable.img_king_spada
+    }
 }

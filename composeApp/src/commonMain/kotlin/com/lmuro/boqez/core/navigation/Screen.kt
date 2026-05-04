@@ -34,6 +34,7 @@ sealed interface Screen {
 
     @Serializable
     data class GameScreen(
-        val gameId : String
+        val gameId : String,
+        val userId : String
     ) : Screen
 }
