@@ -23,13 +23,9 @@ data class GameState(
     val roomCode: String = "",
     val activeGestures: Map<String, ActiveGesture> = emptyMap(),
     val bottomCard : Card? = null,
+    val scores : Map<Int,Int> = emptyMap(),
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {
-    val teammate: Player?
-        get() = teams
-            .find { team -> team.players.any { it.playerId == userId } }
-            ?.players
-            ?.find { it.playerId != userId }
 
     val positionedPlayers: List<PositionedPlayer>
         get() {

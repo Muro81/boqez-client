@@ -11,6 +11,7 @@ import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.PlayCardRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ReadyStatusRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.mappers.toAuth
@@ -18,6 +19,7 @@ import com.lmuro.boqez.data.remote.mappers.toJoinLobby
 import com.lmuro.boqez.data.remote.mappers.toUserInfo
 import com.lmuro.boqez.data.remote.services.ApiService
 import com.lmuro.boqez.domain.model.Auth
+import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.domain.model.LobbyJoin
 import com.lmuro.boqez.domain.model.UserInfo
 import com.lmuro.boqez.domain.repository.BoqezRepository
@@ -153,6 +155,18 @@ class BoqezRepositoryImpl(
             body = GestureRequestDto(
                 gesture = gesture,
                 gameId = gameId
+            )
+        )
+    }
+
+    override suspend fun playCard(
+        gameId: String,
+        card: Card
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.playCard(
+            body = PlayCardRequestDto(
+                gameId = gameId,
+                card = card
             )
         )
     }

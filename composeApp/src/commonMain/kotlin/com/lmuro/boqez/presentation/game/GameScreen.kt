@@ -13,6 +13,7 @@ import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.game.components.GameTable
 import com.lmuro.boqez.presentation.game.components.GameTopBar
+import com.lmuro.boqez.presentation.game.components.PlayerHand
 import com.lmuro.boqez.theme.BoqezThemeProvider
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -35,25 +36,6 @@ fun GameScreen(
                 gameType = state.gameType,
                 onMenuClick = { viewModel.onEvent(GameEvent.OnLeaveGame) }
             )
-//            if (state.gameType != GameType.TERCULJA) {
-//                state.teammate?.let { teammate ->
-//                    teammate as OpponentPlayer
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.Center,
-//                        verticalAlignment = Alignment.CenterVertically,
-//                    ) {
-//                        Avatar(gesture = state.activeGestures[teammate.playerId])
-//                        Spacer(modifier = Modifier.weight(1f))
-//                        OpponentHand(
-//                            count = teammate.handSize,
-//                            cardWidth = 30.dp,
-//                            tiltDegrees = 10f
-//                        )
-//                    }
-//                }
-//            }
             GameTable(
                 tableCards = state.tableCards,
                 positionedPlayers = state.positionedPlayers,
@@ -61,6 +43,16 @@ fun GameScreen(
                 bottomCard = state.bottomCard,
                 activeGestures = state.activeGestures,
             )
+
+            PlayerHand(
+                cards = state.hand,
+                onCardClick = {
+                    viewModel.onEvent(GameEvent.OnPlayCard(it))
+                }
+            )
+            //TODO Who's turn is it
+
+            //TODO score board for 2v2 for now, need to think of terculja last
         }
     }
 }

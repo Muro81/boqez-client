@@ -5,6 +5,7 @@ import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.domain.model.Auth
+import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.domain.model.LobbyJoin
 import com.lmuro.boqez.domain.model.UserInfo
 
@@ -48,6 +49,9 @@ interface BoqezRepository {
     suspend fun startGame(lobbyId: String): Resource<Any, NetworkError, String?>
 
     suspend fun sendGesture(gameId: String, gesture: Gesture): Resource<Any, NetworkError, String?>
+
+    suspend fun playCard(gameId : String, card : Card) : Resource<Any, NetworkError, String?>
+
 }
 
 
