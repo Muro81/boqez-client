@@ -14,21 +14,21 @@ buildkonfig {
     packageName = "com.lmuro.boqez"
 
     defaultConfigs{
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
-        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://10.0.2.2:8080")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://195.201.128.34:8080")
+        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://195.201.128.34:8080")
     }
 
     defaultConfigs("dev") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
-        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://10.0.2.2:8080")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://195.201.128.34:8080")
+        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://195.201.128.34:8080")
     }
     defaultConfigs("test") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
-        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://10.0.2.2:8080")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://195.201.128.34:8080")
+        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://195.201.128.34:8080")
     }
     defaultConfigs("prod") {
-        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://10.0.2.2:8080")
-        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://10.0.2.2:8080")
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", "http://195.201.128.34:8080")
+        buildConfigField(FieldSpec.Type.STRING, "WS_URL", "ws://195.201.128.34:8080")
     }
 }
 
