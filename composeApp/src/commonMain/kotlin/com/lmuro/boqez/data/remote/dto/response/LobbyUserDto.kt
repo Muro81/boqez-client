@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LobbyUserDto(
     @SerialName("user_id") val userId: String,
-    val username: String,
-    val isReady: Boolean,
-    val teamId: Int?
+    @SerialName("username") val username: String,
+    @SerialName("is_ready") val isReady: Boolean,
+    @SerialName("team_id") val teamId: Int?
 )

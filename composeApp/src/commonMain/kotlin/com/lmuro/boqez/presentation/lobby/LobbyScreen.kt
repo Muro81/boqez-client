@@ -50,7 +50,7 @@ fun LobbyScreen(
         showSnackBar(it)
     }
     val state by viewModel.stateFlow.collectAsState()
-
+    //TODO work on Ready UI/UX
     val maxTeamSize = when (state.gameType) {
         GameType.BRISKULA, GameType.TRESETA -> 2
         GameType.TERCULJA -> 3
