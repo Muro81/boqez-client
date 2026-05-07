@@ -210,6 +210,16 @@ class LobbyViewModel(
                             )
                         }
                     }
+                    WebSocketMessageType.LOBBY_DELETED -> {
+                        viewModelScope.launch {
+                            wsService.disconnect()
+                            navigator.navigateTo(
+                                destination = Screen.HomeScreen
+                            ){
+                                popUpTo<Screen.ROOT>()
+                            }
+                        }
+                    }
 
                     else -> {
                         Napier.v("Unhandled socket message.")

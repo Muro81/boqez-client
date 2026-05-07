@@ -153,6 +153,7 @@ enum class WebSocketMessageType(val message : String){
     PLAYER_READY("player_ready"),
     GAME_TYPE_CHANGE("game_type_change"),
     KICK_PLAYER("kick_player"),
+    LOBBY_DELETED("lobby_deleted"),
 
     //GAME MESSAGES
     START_GAME("start_game"),
@@ -165,7 +166,8 @@ enum class WebSocketMessageType(val message : String){
     DRAW_CARD("draw_card"),
     SWAP_CARD("swap_card"),
     PLAYER_DISCONNECTED("player_disconnect"),
-    GESTURE("gesture")
+    GESTURE("gesture"),
+    GAME_DELETED("game_deleted")
 }
 
 enum class TablePosition{

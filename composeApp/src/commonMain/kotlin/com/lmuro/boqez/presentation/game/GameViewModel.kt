@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.lmuro.boqez.core.navigation.Screen
+import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.core.utils.WebSocketMessageType
@@ -29,6 +30,7 @@ class GameViewModel(
     gameStateCache: GameStateCache,
     private val repository: BoqezRepository,
     private val wsService: WSService,
+    private val navigator: Navigator,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<GameState, GameEvent>() {
 
@@ -104,6 +106,16 @@ class GameViewModel(
                         val data =
                             Json.decodeFromJsonElement<SocketPlayCardResponse>(message.payload)
                         onGameFinished(data)
+                    }
+                    WebSocketMessageType.GAME_DELETED -> {
+                        viewModelScope.launch {
+                            wsService.disconnect()
+                            navigator.navigateTo(
+                                destination = Screen.HomeScreen
+                            ){
+                                popUpTo<Screen.ROOT>()
+                            }
+                        }
                     }
 
                     else -> Napier.v("Unhandled socket message.")
