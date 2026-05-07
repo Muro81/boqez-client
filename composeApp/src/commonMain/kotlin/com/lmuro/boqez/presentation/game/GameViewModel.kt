@@ -156,6 +156,7 @@ class GameViewModel(
     }
 
     private fun onTrickFinished(data: SocketPlayCardResponse) {
+        //TODO visual for who won the trick
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
@@ -228,6 +229,7 @@ class GameViewModel(
 
     private fun playCard(card: Card) {
         if(state.value.currentPlayerId != state.value.userId) return
+        //TODO validation if treseta which card can be played
         viewModelScope.launch {
             repository.playCard(
                 gameId = state.value.roomCode,

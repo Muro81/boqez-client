@@ -50,6 +50,9 @@ fun GameScreen(
                     viewModel.onEvent(GameEvent.OnPlayCard(it))
                 }
             )
+            //TODO better card placement on table, also check that players are in order going clockwise
+            //TODO better card hitbox for clicking...
+            //TODO got error that player doesnt have card, so maybe stop anti spam of card clicking
             //TODO Who's turn is it
 
             //TODO score board for 2v2 for now, need to think of terculja last
