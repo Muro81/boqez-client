@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 fun provideWsClient() : HttpClient {
     return HttpClient {
         install(WebSockets) {
-            pingInterval = 15.seconds
+            pingInterval = 5.seconds
         }
         install(Logging) {
             logger = object : Logger {
