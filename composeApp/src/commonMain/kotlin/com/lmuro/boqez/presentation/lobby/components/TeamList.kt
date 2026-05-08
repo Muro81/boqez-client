@@ -77,7 +77,13 @@ fun TeamList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .background(BoqezThemeProvider.colors.white, RoundedCornerShape(8.dp))
+                        .background(
+                            if (player.isReady || player.userId == ownerId)
+                                BoqezThemeProvider.colors.white
+                            else
+                                BoqezThemeProvider.colors.parchmentMid,
+                            RoundedCornerShape(8.dp)
+                        )
                         .border(1.dp, BoqezThemeProvider.colors.goldDark, RoundedCornerShape(8.dp))
                         .padding(horizontal = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,

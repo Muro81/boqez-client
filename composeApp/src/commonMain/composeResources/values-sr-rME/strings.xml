@@ -45,5 +45,6 @@
     <string name ="join_temp">Pridruži se %1$s</string>
     <string name ="start">Počni</string>
     <string name ="ready">Spreman</string>
+    <string name="not_ready">Nije spreman</string>
 
 </resources>

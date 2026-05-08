@@ -34,6 +34,7 @@ import com.lmuro.boqez.core.utils.capitalize
 import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.PrimaryButton
+import com.lmuro.boqez.presentation.components.ReadyButton
 import com.lmuro.boqez.presentation.lobby.components.GameTypeCard
 import com.lmuro.boqez.presentation.lobby.components.SpectatorList
 import com.lmuro.boqez.presentation.lobby.components.TeamList
@@ -50,7 +51,7 @@ fun LobbyScreen(
         showSnackBar(it)
     }
     val state by viewModel.stateFlow.collectAsState()
-    //TODO work on Ready UI/UX
+
     val maxTeamSize = when (state.gameType) {
         GameType.BRISKULA, GameType.TRESETA -> 2
         GameType.TERCULJA -> 3
@@ -254,14 +255,19 @@ fun LobbyScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             if (state.myTeamId != null) {
-                PrimaryButton(
-                    onClick = {
-                        viewModel.onEvent(if (state.isOwner) LobbyEvent.OnStartGame else LobbyEvent.OnReadyChange)
-                    },
-                    isEnabled = (state.isOwner && state.canStartGame) || !state.isOwner
-                ) {
-                    Text(
-                        text = if (state.isOwner) "Start" else "Ready"
+                if (state.isOwner) {
+                    PrimaryButton(
+                        onClick = { viewModel.onEvent(LobbyEvent.OnStartGame) },
+                        isEnabled = state.canStartGame
+                    ) {
+                        Text(text = "Start")
+                    }
+                } else {
+                    val isReady = state.players
+                        .find { it.userId == state.userId }?.isReady ?: false
+                    ReadyButton(
+                        isReady = isReady,
+                        onClick = { viewModel.onEvent(LobbyEvent.OnReadyChange) }
                     )
                 }
             }

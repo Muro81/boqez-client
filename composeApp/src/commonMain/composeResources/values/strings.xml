@@ -44,6 +44,7 @@
     <string name ="join_spectators">Join spectators</string>
     <string name ="join_temp">Join %1$s</string>
     <string name ="start">Start</string>
-    <string name ="ready">Ready</string>
+    <string name="ready">Ready</string>
+    <string name="not_ready">Not Ready</string>
 
 </resources>
