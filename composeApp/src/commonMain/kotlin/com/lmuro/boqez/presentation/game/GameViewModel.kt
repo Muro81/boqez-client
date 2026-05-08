@@ -161,7 +161,25 @@ class GameViewModel(
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
-                currentPlayerId = data.nextPlayerId.orEmpty()
+                currentPlayerId = data.nextPlayerId.orEmpty(),
+                hand = if (data.userId == it.userId) {
+                    it.hand - data.card
+                } else {
+                    it.hand
+                },
+                teams = if (data.userId != it.userId) {
+                    it.teams.map { team ->
+                        team.copy(
+                            players = team.players.map { player ->
+                                if (player.playerId == data.userId && player is OpponentPlayer) {
+                                    player.copy(handSize = player.handSize - 1)
+                                } else player
+                            }
+                        )
+                    }
+                } else {
+                    it.teams
+                }
             )
         }
         viewModelScope.launch {
