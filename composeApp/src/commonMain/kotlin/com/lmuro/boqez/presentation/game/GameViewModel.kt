@@ -193,7 +193,6 @@ class GameViewModel(
     }
 
     private fun onCardPlayed(data: SocketPlayCardResponse) {
-        //TODO invalid number of cards... maybe the call needs to be synchronized...
         state.update { it.copy(
             tableCards = it.tableCards + (data.userId to data.card),
             currentPlayerId = data.nextPlayerId.orEmpty(),
