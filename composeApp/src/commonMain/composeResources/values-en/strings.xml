@@ -46,5 +46,6 @@
     <string name ="start">Start</string>
     <string name ="ready">Ready</string>
     <string name="not_ready">Not Ready</string>
+    <string name="room_code_copied">Room code copied!</string>
 
 </resources>

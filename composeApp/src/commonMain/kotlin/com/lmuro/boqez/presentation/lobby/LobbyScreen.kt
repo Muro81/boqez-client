@@ -28,6 +28,8 @@ import boqez.composeapp.generated.resources.Res
 import boqez.composeapp.generated.resources.room_temp
 import boqez.composeapp.generated.resources.spectators
 import boqez.composeapp.generated.resources.teams
+import boqez.composeapp.generated.resources.room_code_copied
+import com.lmuro.boqez.core.utils.ClipboardManager
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.core.utils.capitalize
@@ -40,6 +42,7 @@ import com.lmuro.boqez.presentation.lobby.components.SpectatorList
 import com.lmuro.boqez.presentation.lobby.components.TeamList
 import com.lmuro.boqez.theme.BoqezThemeProvider
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -51,6 +54,8 @@ fun LobbyScreen(
         showSnackBar(it)
     }
     val state by viewModel.stateFlow.collectAsState()
+    val clipboardManager = koinInject<ClipboardManager>()
+    val roomCodeCopied = stringResource(Res.string.room_code_copied)
 
     val maxTeamSize = when (state.gameType) {
         GameType.BRISKULA, GameType.TRESETA -> 2
@@ -94,7 +99,8 @@ fun LobbyScreen(
                         )
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                         .noRippleClickable {
-                            //TODO add copy text to clipboard
+                            clipboardManager.copyToClipboard(state.lobbyId)
+                            showSnackBar(roomCodeCopied)
                         }
 
                 ) {

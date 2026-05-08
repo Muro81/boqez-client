@@ -46,5 +46,6 @@
     <string name ="start">Počni</string>
     <string name ="ready">Spreman</string>
     <string name="not_ready">Nije spreman</string>
+    <string name="room_code_copied">Kod sobe je kopiran!</string>
 
 </resources>

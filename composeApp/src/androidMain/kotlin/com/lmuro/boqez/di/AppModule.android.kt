@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.lmuro.boqez.AndroidPlatform
 import com.lmuro.boqez.Platform
+import com.lmuro.boqez.core.utils.ClipboardManager
 import com.lmuro.boqez.data.local.createDataStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -12,4 +13,5 @@ import org.koin.dsl.module
 actual val platformAppModule: Module = module {
     single<DataStore<Preferences>> { createDataStore(androidContext()) }
     single<Platform> { AndroidPlatform(androidContext()) }
+    single { ClipboardManager(androidContext()) }
 }
