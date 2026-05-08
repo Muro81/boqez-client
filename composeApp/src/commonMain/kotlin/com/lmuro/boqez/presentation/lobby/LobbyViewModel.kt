@@ -81,9 +81,7 @@ class LobbyViewModel(
     }
 
     private fun connectToLobby(userId: String) {
-        viewModelScope.launch {
             wsService.connect(userId)
-        }
     }
 
     private fun observeMessages() {
