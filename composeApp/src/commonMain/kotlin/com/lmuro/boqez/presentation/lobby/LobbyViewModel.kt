@@ -33,7 +33,7 @@ class LobbyViewModel(
     private val repository: BoqezRepository,
     private val navigator: Navigator,
     private val wsService: WSService,
-    private val gameStateCache : GameStateCache,
+    private val gameStateCache: GameStateCache,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<LobbyState, LobbyEvent>() {
     override val initialState: LobbyState = LobbyState()
@@ -194,7 +194,7 @@ class LobbyViewModel(
                         viewModelScope.launch {
                             val gameData = GameStartData(
                                 gameType = data.gameType,
-                                teams = data.teams.map { it.toTeam(state.value.userId,data.hand) },
+                                teams = data.teams.map { it.toTeam(state.value.userId, data.hand) },
                                 currentPlayerId = data.currentPlayerId,
                                 deck = data.deck,
                                 discardPile = data.discardPile,
@@ -207,15 +207,18 @@ class LobbyViewModel(
                                     gameId = data.gameId,
                                     userId = state.value.userId
                                 )
-                            )
+                            ) {
+                                popUpTo<Screen.ROOT>()
+                            }
                         }
                     }
+
                     WebSocketMessageType.LOBBY_DELETED -> {
                         viewModelScope.launch {
                             wsService.disconnect()
                             navigator.navigateTo(
                                 destination = Screen.HomeScreen
-                            ){
+                            ) {
                                 popUpTo<Screen.ROOT>()
                             }
                         }
@@ -303,9 +306,9 @@ class LobbyViewModel(
             state.update { it.copy(isLoading = true) }
             repository.startGame(lobbyId = state.value.lobbyId)
                 .onError { networkError, message ->
-                val decide = message ?: networkError.toString()
-                _snackBarChannel.send(decide)
-            }
+                    val decide = message ?: networkError.toString()
+                    _snackBarChannel.send(decide)
+                }
             state.update { it.copy(isLoading = false) }
         }
     }

@@ -6,6 +6,7 @@ import androidx.navigation.toRoute
 import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
+import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.core.utils.WebSocketMessageType
 import com.lmuro.boqez.data.local.GameStateCache
@@ -230,7 +231,19 @@ class GameViewModel(
 
     private fun playCard(card: Card) {
         if(state.value.currentPlayerId != state.value.userId) return
-        //TODO validation if treseta which card can be played
+
+        if(state.value.gameType == GameType.TRESETA){
+            val leadSuit = state.value.tableCards.values.firstOrNull()?.suit
+            if(leadSuit != null && card.suit != leadSuit){
+                val hasSuit = state.value.hand.any{ it.suit == leadSuit }
+                if(hasSuit){
+                    viewModelScope.launch {
+                        _snackBarChannel.send("You must play a $leadSuit card.")
+                    }
+                    return
+                }
+            }
+        }
         viewModelScope.launch {
             repository.playCard(
                 gameId = state.value.roomCode,
