@@ -55,7 +55,7 @@ fun GameTypeCard(
         ) {
             Text(
                 text = type.gameName.capitalize(),
-                style = BoqezThemeProvider.typography.cinzelBold20,
+                style = BoqezThemeProvider.typography.cinzelBold16,
                 color = textColor
             )
             Text(
