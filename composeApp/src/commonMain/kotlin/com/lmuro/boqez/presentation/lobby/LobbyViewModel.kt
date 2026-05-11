@@ -76,8 +76,8 @@ class LobbyViewModel(
                 userId = args.userId
             )
         }
-        connectToLobby(args.userId)
         observeMessages()
+        connectToLobby(args.userId)
     }
 
     private fun connectToLobby(userId: String) {
