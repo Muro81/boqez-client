@@ -49,7 +49,8 @@ class GameViewModel(
                         .flatMap { it.players }
                         .filterIsInstance<LocalPlayer>()
                         .firstOrNull()
-                        ?.hand ?: emptyList(),
+                        ?.hand
+                        ?.sortedWith(Card.tresetaComparator) ?: emptyList(),
                     gameType = start.gameType,
                     teams = start.teams,
                     userId = args.userId,
@@ -163,7 +164,7 @@ class GameViewModel(
                 tableCards = it.tableCards + (data.userId to data.card),
                 currentPlayerId = data.nextPlayerId.orEmpty(),
                 hand = if (data.userId == it.userId) {
-                    it.hand - data.card
+                    (it.hand - data.card).sortedWith(Card.tresetaComparator)
                 } else {
                     it.hand
                 },
@@ -197,7 +198,7 @@ class GameViewModel(
             tableCards = it.tableCards + (data.userId to data.card),
             currentPlayerId = data.nextPlayerId.orEmpty(),
             hand = if (data.userId == it.userId) {
-                it.hand - data.card
+                (it.hand - data.card).sortedWith(Card.tresetaComparator)
             } else {
                 it.hand
             },

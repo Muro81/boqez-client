@@ -33,7 +33,12 @@ object GameTypeSerializer : KSerializer<GameType> {
 
 @Serializable(with = SuitSerializer::class)
 enum class Suit {
-    KUPA, DINAR, BASTON, SPADA
+    KUPA,
+    DINAR,
+    BASTON,
+    SPADA;
+
+    val sortOrder: Int get() = ordinal
 }
 
 object SuitSerializer : KSerializer<Suit> {
@@ -72,7 +77,20 @@ enum class Rank {
     SEVEN,
     JACK,
     KNIGHT,
-    KING
+    KING;
+
+    val tresetaSortOrder: Int get() = when (this) {
+        THREE  -> 0
+        TWO    -> 1
+        ACE    -> 2
+        KING   -> 3
+        KNIGHT -> 4
+        JACK   -> 5
+        SEVEN  -> 6
+        SIX    -> 7
+        FIVE   -> 8
+        FOUR   -> 9
+    }
 }
 
 object RankSerializer : KSerializer<Rank> {

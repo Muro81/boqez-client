@@ -6,9 +6,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Card(
-    val suit : Suit,
-    val rank : Rank
-)
+    val suit: Suit,
+    val rank: Rank
+) {
+    companion object {
+        val tresetaComparator = compareBy<Card>(
+            { it.suit.sortOrder },
+            { it.rank.tresetaSortOrder }
+        )
+    }
+}
 
 
 
