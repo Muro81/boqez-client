@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +22,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.TablePosition
 import com.lmuro.boqez.domain.model.ActiveGesture
 import com.lmuro.boqez.domain.model.Card
@@ -38,21 +37,21 @@ fun GameTable(
     deckCount: Int,
     bottomCard: Card?,
     activeGestures: Map<String, ActiveGesture>,
+    currentPlayerId: String,
+    gameType : GameType?,
     modifier: Modifier = Modifier
 ) {
     val topPlayer = positionedPlayers.find { it.position == TablePosition.TOP }
     val leftPlayer = positionedPlayers.find { it.position == TablePosition.LEFT }
     val rightPlayer = positionedPlayers.find { it.position == TablePosition.RIGHT }
     val dashedCircleColor = BoqezThemeProvider.colors.white.copy(alpha = 0.1f)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(0.85f)
             .clip(RoundedCornerShape(16.dp))
             .background(BoqezThemeProvider.colors.feltDark)
     ) {
-
-        // --- Dashed circle in center ---
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
                 color = dashedCircleColor,
@@ -64,36 +63,39 @@ fun GameTable(
             )
         }
 
-        // --- Deck + trump card (top left) ---
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box {
-                bottomCard?.let {
-                    CardFace(
-                        card = it,
-                        modifier = Modifier
-                            .rotate(90f)
-                            .offset(x = 18.dp, y = 8.dp)
-                    )
+        // Deck + trump card
+        if(gameType == GameType.BRISKULA){
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box {
+                    bottomCard?.let {
+                        CardFace(
+                            card = it,
+                            modifier = Modifier
+                                .rotate(90f)
+                                .offset(x = 18.dp, y = 8.dp)
+                        )
+                    }
+                    CardBack(width = 32.dp)
                 }
-                CardBack(width = 32.dp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "$deckCount LEFT",
+                    fontSize = 10.sp,
+                    color = BoqezThemeProvider.colors.goldLight.copy(alpha = 0.8f),
+                    fontStyle = FontStyle.Italic
+                )
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "$deckCount LEFT",
-                fontSize = 10.sp,
-                color = BoqezThemeProvider.colors.goldLight.copy(alpha = 0.8f),
-                fontStyle = FontStyle.Italic
-            )
         }
 
-        // --- Top player (teammate) ---
+        // Top player
         topPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
+            val isCurrentPlayer = positioned.player.playerId == currentPlayerId
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -102,7 +104,11 @@ fun GameTable(
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = BoqezThemeProvider.colors.feltLight
+                    borderColor = if (isCurrentPlayer)
+                        BoqezThemeProvider.colors.goldLight
+                    else
+                        BoqezThemeProvider.colors.feltLight,
+                    pulse = isCurrentPlayer
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -111,22 +117,27 @@ fun GameTable(
                     color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                OpponentHand(count = player.handSize)
+                OpponentHand(count = player.handSize, cardWidth = 20.dp)
             }
         }
 
-        // --- Left player ---
+        // Left player
         leftPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
+            val isCurrentPlayer = positioned.player.playerId == currentPlayerId
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 8.dp),
+                    .padding(start = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = BoqezThemeProvider.colors.crimsonBase
+                    borderColor = if (isCurrentPlayer)
+                        BoqezThemeProvider.colors.goldLight
+                    else
+                        BoqezThemeProvider.colors.crimsonBase,
+                    pulse = isCurrentPlayer
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -137,24 +148,30 @@ fun GameTable(
                 Spacer(modifier = Modifier.height(4.dp))
                 OpponentHand(
                     count = player.handSize,
+                    cardWidth = 20.dp,
                     vertical = true,
                     flipLift = false
                 )
             }
         }
 
-        // --- Right player ---
+        // Right player
         rightPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
+            val isCurrentPlayer = positioned.player.playerId == currentPlayerId
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp),
+                    .padding(end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = BoqezThemeProvider.colors.crimsonBase
+                    borderColor = if (isCurrentPlayer)
+                        BoqezThemeProvider.colors.goldLight
+                    else
+                        BoqezThemeProvider.colors.crimsonBase,
+                    pulse = isCurrentPlayer
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -165,25 +182,24 @@ fun GameTable(
                 Spacer(modifier = Modifier.height(4.dp))
                 OpponentHand(
                     count = player.handSize,
+                    cardWidth = 20.dp,
                     vertical = true,
                     flipLift = true
                 )
             }
         }
 
-        // --- Table cards in center ---
+        // Table cards
         Box(modifier = Modifier.align(Alignment.Center)) {
             tableCards.entries.forEach { (playerId, card) ->
                 val position = positionedPlayers.find { it.player.playerId == playerId }?.position
                     ?: TablePosition.BOTTOM
-
                 val (offsetX, offsetY, rotation) = when (position) {
-                    TablePosition.TOP    -> Triple(0f, -48f, 180f)
-                    TablePosition.LEFT   -> Triple(-48f, 0f, 90f)
-                    TablePosition.RIGHT  -> Triple(48f, 0f, 270f)
+                    TablePosition.TOP -> Triple(0f, -48f, 180f)
+                    TablePosition.LEFT -> Triple(-48f, 0f, 90f)
+                    TablePosition.RIGHT -> Triple(48f, 0f, 270f)
                     TablePosition.BOTTOM -> Triple(0f, 48f, 0f)
                 }
-
                 CardFace(
                     card = card,
                     modifier = Modifier
@@ -193,7 +209,6 @@ fun GameTable(
             }
         }
 
-        // --- "on the table" label ---
         Text(
             text = "on the table",
             fontSize = 10.sp,

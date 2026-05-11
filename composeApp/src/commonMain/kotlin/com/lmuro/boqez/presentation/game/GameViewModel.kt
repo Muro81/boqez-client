@@ -234,7 +234,7 @@ class GameViewModel(
     }
 
     private fun sendGesture(gesture: Gesture) {
-        if(state.value.currentPlayerId != state.value.userId) return
+        if(!state.value.isMyTurn) return
         viewModelScope.launch {
             repository.sendGesture(
                 gameId = state.value.roomCode,
@@ -247,7 +247,7 @@ class GameViewModel(
     }
 
     private fun playCard(card: Card) {
-        if(state.value.currentPlayerId != state.value.userId) return
+        if(!state.value.isMyTurn) return
 
         if(state.value.gameType == GameType.TRESETA){
             val leadSuit = state.value.tableCards.values.firstOrNull()?.suit

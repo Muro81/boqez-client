@@ -5,7 +5,6 @@ import com.lmuro.boqez.core.utils.Suit
 import com.lmuro.boqez.core.utils.TablePosition
 import com.lmuro.boqez.domain.model.ActiveGesture
 import com.lmuro.boqez.domain.model.Card
-import com.lmuro.boqez.domain.model.Player
 import com.lmuro.boqez.domain.model.PositionedPlayer
 import com.lmuro.boqez.domain.model.Team
 import com.lmuro.boqez.presentation.base.BaseState
@@ -46,4 +45,12 @@ data class GameState(
                     position?.let { PositionedPlayer(player, it) }
                 }
         }
+
+    val currentPlayerUsername: String
+        get() = teams.flatMap { it.players }
+            .firstOrNull { it.playerId == currentPlayerId }
+            ?.username ?: ""
+
+    val isMyTurn: Boolean
+        get() = currentPlayerId == userId
 }

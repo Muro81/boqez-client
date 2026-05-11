@@ -1,7 +1,11 @@
 package com.lmuro.boqez.presentation.game.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -35,8 +39,20 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun Avatar(
     gesture: ActiveGesture?,
-    borderColor : Color,
+    borderColor: Color,
+    pulse: Boolean = false,
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseAlpha"
+    )
+
     val isWinking = gesture?.gesture == Gesture.THREE
     val isPouting = gesture?.gesture == Gesture.ACE
     val isEyebrowUp = gesture?.gesture == Gesture.KING
@@ -53,8 +69,11 @@ fun Avatar(
 
     Box(
         contentAlignment = Alignment.TopCenter,
-        modifier = Modifier
-            .border(1.dp,borderColor,CircleShape)
+        modifier = Modifier.border(
+            width = if (pulse) 2.dp else 1.dp,
+            color = if (pulse) borderColor.copy(alpha = pulseAlpha) else borderColor,
+            shape = CircleShape
+        )
     ) {
         Image(
             painter = painterResource(Res.drawable.img_avatar),
