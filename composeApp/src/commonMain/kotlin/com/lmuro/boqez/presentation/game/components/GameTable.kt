@@ -174,23 +174,21 @@ fun GameTable(
         // --- Table cards in center ---
         Box(modifier = Modifier.align(Alignment.Center)) {
             tableCards.entries.forEach { (playerId, card) ->
-                val rotation = remember(playerId) { (-15..15).random().toFloat() }
-                val offsetX = remember(playerId) { (-20..20).random().toFloat() }
-                val offsetY = remember(playerId) { (-20..20).random().toFloat() }
+                val position = positionedPlayers.find { it.player.playerId == playerId }?.position
+                    ?: TablePosition.BOTTOM
+
+                val (offsetX, offsetY, rotation) = when (position) {
+                    TablePosition.TOP    -> Triple(0f, -48f, 180f)
+                    TablePosition.LEFT   -> Triple(-48f, 0f, 90f)
+                    TablePosition.RIGHT  -> Triple(48f, 0f, 270f)
+                    TablePosition.BOTTOM -> Triple(0f, 48f, 0f)
+                }
 
                 CardFace(
                     card = card,
                     modifier = Modifier
                         .offset(x = offsetX.dp, y = offsetY.dp)
                         .rotate(rotation)
-                )
-                Text(
-                    text = positionedPlayers
-                        .find { it.player.playerId == playerId }
-                        ?.player?.username ?: "YOU",
-                    fontSize = 9.sp,
-                    color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f),
-                    modifier = Modifier.offset(x = offsetX.dp, y = (offsetY + 52).dp)
                 )
             }
         }

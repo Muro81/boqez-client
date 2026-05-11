@@ -6,7 +6,7 @@ import com.lmuro.boqez.domain.model.LocalPlayer
 import com.lmuro.boqez.domain.model.OpponentPlayer
 
 fun SocketUser.toPlayer(currentUserId: String, hand: List<Card>) = if (userId == currentUserId) {
-    LocalPlayer(playerId = userId, username = username, hand = hand)
+    LocalPlayer(playerId = userId, username = username, seatIndex = seatIndex, hand = hand)
 } else {
-    OpponentPlayer(playerId = userId, username = username, handSize = 10)
+    OpponentPlayer(playerId = userId, username = username, seatIndex = seatIndex, handSize = 10)
 }

@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SocketUser(
     @SerialName("user_id") val userId : String,
-    @SerialName("username") val username : String
+    @SerialName("username") val username : String,
+    @SerialName("seat_index") val seatIndex: Int
 )

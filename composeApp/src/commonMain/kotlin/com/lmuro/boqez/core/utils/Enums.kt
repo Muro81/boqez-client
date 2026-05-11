@@ -171,5 +171,5 @@ enum class WebSocketMessageType(val message : String){
 }
 
 enum class TablePosition{
-    TOP,LEFT,RIGHT
+    TOP,LEFT,RIGHT,BOTTOM
 }

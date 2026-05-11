@@ -29,16 +29,21 @@ data class GameState(
 
     val positionedPlayers: List<PositionedPlayer>
         get() {
-            val myTeam = teams.find { team -> team.players.any { it.playerId == userId } }
-            val opponentTeam = teams.find { team -> team.players.none { it.playerId == userId } }
+            val mySeat = teams.flatMap { it.players }
+                .firstOrNull { it.playerId == userId }
+                ?.seatIndex ?: return emptyList()
 
-            val teammate = myTeam?.players?.find { it.playerId != userId }
-            val opponents = opponentTeam?.players ?: emptyList()
-
-            return buildList {
-                teammate?.let { add(PositionedPlayer(it, TablePosition.TOP)) }
-                opponents.getOrNull(0)?.let { add(PositionedPlayer(it, TablePosition.LEFT)) }
-                opponents.getOrNull(1)?.let { add(PositionedPlayer(it, TablePosition.RIGHT)) }
-            }
+            return teams.flatMap { it.players }
+                .filter { it.playerId != userId }
+                .mapNotNull { player ->
+                    val relative = ((player.seatIndex - mySeat) + 4) % 4
+                    val position = when (relative) {
+                        2 -> TablePosition.TOP
+                        1 -> TablePosition.LEFT
+                        3 -> TablePosition.RIGHT
+                        else -> null
+                    }
+                    position?.let { PositionedPlayer(player, it) }
+                }
         }
 }
