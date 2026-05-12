@@ -26,6 +26,7 @@ data class GameState(
     val scores : Map<Int,Int> = emptyMap(),
     val trickNumber : Int = 0,
     val hasCalledThisRound : Boolean = false,
+    val isTrickFinishing : Boolean = false,
     val calledCards: Pair<String, List<Card>>? = null,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {

@@ -147,7 +147,12 @@ class GameViewModel(
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
-                scores = data.scores ?: it.scores
+                scores = data.scores ?: it.scores,
+                hand = if (data.userId == it.userId) {
+                    (it.hand - data.card).sortedWith(Card.tresetaComparator)
+                } else {
+                    it.hand
+                }
             )
         }
         //TODO show results of game finished, add option to play again
@@ -198,13 +203,15 @@ class GameViewModel(
                     it.teams
                 },
                 trickNumber = it.trickNumber + 1,
+                isTrickFinishing = true
             )
         }
         viewModelScope.launch {
             delay(1500)
             state.update {
                 it.copy(
-                    tableCards = emptyMap()
+                    tableCards = emptyMap(),
+                    isTrickFinishing = false
                 )
             }
         }
@@ -266,7 +273,7 @@ class GameViewModel(
 
     private fun playCard(card: Card) {
         if(!state.value.isMyTurn) return
-
+        if(state.value.isTrickFinishing) return
         if(state.value.gameType == GameType.TRESETA){
             val leadSuit = state.value.tableCards.values.firstOrNull()?.suit
             if(leadSuit != null && card.suit != leadSuit){
