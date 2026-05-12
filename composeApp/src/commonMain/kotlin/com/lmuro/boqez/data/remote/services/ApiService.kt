@@ -4,6 +4,7 @@ import com.lmuro.boqez.core.networking.NetworkError
 import com.lmuro.boqez.core.networking.Resource
 import com.lmuro.boqez.data.remote.dto.DataResponse
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.CardsListRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
@@ -106,6 +107,13 @@ class ApiService(
     suspend fun playCard(body : PlayCardRequestDto) : Resource<Any, NetworkError,String?>{
         return post(
             "/api/game/play-card",
+            body = body
+        )
+    }
+
+    suspend fun callPoints(body : CardsListRequestDto) : Resource<Any, NetworkError,String?>{
+        return post(
+            "/api/game/call-points",
             body = body
         )
     }

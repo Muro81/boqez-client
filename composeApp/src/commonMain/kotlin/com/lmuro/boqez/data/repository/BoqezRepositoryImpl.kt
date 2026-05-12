@@ -6,6 +6,7 @@ import com.lmuro.boqez.core.networking.map
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.CardsListRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
@@ -167,6 +168,18 @@ class BoqezRepositoryImpl(
             body = PlayCardRequestDto(
                 gameId = gameId,
                 card = card
+            )
+        )
+    }
+
+    override suspend fun callPoints(
+        gameId: String,
+        cards: List<Card>
+    ): Resource<Any, NetworkError, String?> {
+        return apiService.callPoints(
+            body = CardsListRequestDto(
+                gameId = gameId,
+                cards = cards
             )
         )
     }

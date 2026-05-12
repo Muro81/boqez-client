@@ -52,6 +52,7 @@ interface BoqezRepository {
 
     suspend fun playCard(gameId : String, card : Card) : Resource<Any, NetworkError, String?>
 
+    suspend fun callPoints(gameId : String, cards : List<Card>) : Resource<Any, NetworkError, String?>
 }
 
 

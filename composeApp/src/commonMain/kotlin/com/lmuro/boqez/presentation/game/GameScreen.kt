@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.game.components.Avatar
+import com.lmuro.boqez.presentation.game.components.CallCardsButton
 import com.lmuro.boqez.presentation.game.components.GameTable
 import com.lmuro.boqez.presentation.game.components.GameTopBar
 import com.lmuro.boqez.presentation.game.components.PlayerHand
@@ -58,6 +59,8 @@ fun GameScreen(
                 activeGestures = state.activeGestures,
                 currentPlayerId = state.currentPlayerId,
                 gameType = state.gameType,
+                userId = state.userId,
+                calledCards = state.calledCards,
                 modifier = Modifier.weight(1f)
             )
 
@@ -75,6 +78,12 @@ fun GameScreen(
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
             )
+
+            if (state.canCallCards) {
+                CallCardsButton(
+                    onClick = { viewModel.onEvent(GameEvent.OnCallCards) }
+                )
+            }
 
             // My player strip
             Row(
@@ -118,9 +127,7 @@ fun GameScreen(
                     }
                 )
             }
-            //TODO Who's turn is it
 
-            //TODO score board for 2v2 for now, need to think of terculja last
         }
     }
 }

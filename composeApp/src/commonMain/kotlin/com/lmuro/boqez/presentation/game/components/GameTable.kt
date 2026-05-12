@@ -39,6 +39,8 @@ fun GameTable(
     activeGestures: Map<String, ActiveGesture>,
     currentPlayerId: String,
     gameType : GameType?,
+    calledCards: Pair<String, List<Card>>?,
+    userId: String,
     modifier: Modifier = Modifier
 ) {
     val topPlayer = positionedPlayers.find { it.position == TablePosition.TOP }
@@ -218,5 +220,17 @@ fun GameTable(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 8.dp)
         )
+
+        calledCards?.let {
+            val callerUsername = positionedPlayers
+                .firstOrNull { p -> p.player.playerId == it.first }
+                ?.player?.username ?: "Opponent"
+            CalledCardsOverlay(
+                calledCards = it,
+                currentUserId = userId,
+                callerUsername = callerUsername,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
 }

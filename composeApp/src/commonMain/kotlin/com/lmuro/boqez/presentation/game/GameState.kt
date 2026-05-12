@@ -1,6 +1,7 @@
 package com.lmuro.boqez.presentation.game
 
 import com.lmuro.boqez.core.utils.GameType
+import com.lmuro.boqez.core.utils.Rank
 import com.lmuro.boqez.core.utils.Suit
 import com.lmuro.boqez.core.utils.TablePosition
 import com.lmuro.boqez.domain.model.ActiveGesture
@@ -23,6 +24,9 @@ data class GameState(
     val activeGestures: Map<String, ActiveGesture> = emptyMap(),
     val bottomCard : Card? = null,
     val scores : Map<Int,Int> = emptyMap(),
+    val trickNumber : Int = 0,
+    val hasCalledThisRound : Boolean = false,
+    val calledCards: Pair<String, List<Card>>? = null,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {
 
@@ -53,4 +57,30 @@ data class GameState(
 
     val isMyTurn: Boolean
         get() = currentPlayerId == userId
+
+    val availableCallCombinations: List<List<Card>>
+        get() {
+            if (trickNumber != 0) return emptyList()
+            val combos = mutableListOf<List<Card>>()
+
+            // Naples: A+2+3 of same suit
+            Suit.entries.forEach { suit ->
+                val naples = hand.filter {
+                    it.suit == suit && it.rank in listOf(Rank.ACE, Rank.TWO, Rank.THREE)
+                }
+                if (naples.size == 3) combos.add(naples)
+            }
+
+            // Three/four of a kind for ACE, TWO, THREE only
+            listOf(Rank.ACE, Rank.TWO, Rank.THREE).forEach { rank ->
+                val matching = hand.filter { it.rank == rank }
+                if (matching.size >= 3) combos.add(matching)
+            }
+
+            return combos
+        }
+
+    val canCallCards: Boolean
+        get() = isMyTurn && trickNumber == 0 && gameType == GameType.TRESETA &&
+                availableCallCombinations.isNotEmpty()
 }

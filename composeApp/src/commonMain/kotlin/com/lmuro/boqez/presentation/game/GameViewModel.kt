@@ -10,6 +10,7 @@ import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.core.utils.WebSocketMessageType
 import com.lmuro.boqez.data.local.GameStateCache
+import com.lmuro.boqez.data.remote.dto.socket.SocketCallCardsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGestureResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketPlayCardResponse
 import com.lmuro.boqez.data.remote.services.WSService
@@ -38,6 +39,7 @@ class GameViewModel(
     override val initialState: GameState = GameState()
 
     private val gestureJobs = mutableMapOf<String, Job>()
+    private var calledCardsJob: Job? = null
 
     init {
         val args = savedStateHandle.toRoute<Screen.GameScreen>()
@@ -68,7 +70,7 @@ class GameViewModel(
 
     override fun onEvent(event: GameEvent) {
         when (event) {
-            is GameEvent.OnCallCards -> TODO()
+            GameEvent.OnCallCards -> callPoints()
             is GameEvent.OnGesture -> sendGesture(event.gesture)
             GameEvent.OnLeaveGame -> TODO()
             is GameEvent.OnPlayCard -> playCard(event.card)
@@ -119,6 +121,20 @@ class GameViewModel(
                             }
                         }
                     }
+                    WebSocketMessageType.CALL_POINTS -> {
+                        val data = Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
+                        calledCardsJob?.cancel()
+                        state.update {
+                            it.copy(
+                                calledCards = Pair(data.userId, data.cards),
+                                hasCalledThisRound = if (data.userId == it.userId) true else it.hasCalledThisRound
+                            )
+                        }
+                        calledCardsJob = viewModelScope.launch {
+                            delay(3000)
+                            state.update { it.copy(calledCards = null) }
+                        }
+                    }
 
                     else -> Napier.v("Unhandled socket message.")
                 }
@@ -145,7 +161,10 @@ class GameViewModel(
                 currentPlayerId = data.nextPlayerId.orEmpty(),
                 scores = it.scores + (data.scores?.mapValues { (teamId, points) ->
                     (it.scores[teamId] ?: 0) + points
-                } ?: emptyMap()))
+                } ?: emptyMap()),
+                trickNumber = 0,
+                hasCalledThisRound = false
+                )
         }
         viewModelScope.launch {
             delay(1500)
@@ -180,7 +199,8 @@ class GameViewModel(
                     }
                 } else {
                     it.teams
-                }
+                },
+                trickNumber = it.trickNumber + 1,
             )
         }
         viewModelScope.launch {
@@ -272,6 +292,23 @@ class GameViewModel(
             }
         }
     }
+
+    private fun callPoints() {
+        viewModelScope.launch {
+            val combos = state.value.availableCallCombinations
+            if (combos.isEmpty()) return@launch
+            // call all available combinations
+            combos.forEach { combo ->
+                repository.callPoints(
+                    gameId = state.value.roomCode,
+                    cards = combo
+                ).onError { _, message ->
+                    _snackBarChannel.send(message ?: "Failed to call cards.")
+                }
+            }
+        }
+    }
+
 
     override fun onCleared() {
         super.onCleared()
