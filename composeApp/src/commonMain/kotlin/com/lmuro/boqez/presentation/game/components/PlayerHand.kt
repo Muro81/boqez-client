@@ -2,10 +2,12 @@ package com.lmuro.boqez.presentation.game.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,12 +15,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.domain.model.Card
+import com.lmuro.boqez.theme.BoqezThemeProvider
 
 @Composable
 fun PlayerHand(
@@ -69,6 +73,12 @@ fun PlayerHand(
                     modifier = Modifier
                         .width(cardWidth)
                         .height(cardHeight)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            width = 1.dp,
+                            color = BoqezThemeProvider.colors.goldDark.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
         }

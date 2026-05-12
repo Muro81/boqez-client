@@ -128,7 +128,7 @@ fun GameTable(
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 20.dp),
+                    .padding(start = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Avatar(
@@ -145,7 +145,7 @@ fun GameTable(
                     fontSize = 10.sp,
                     color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 OpponentHand(
                     count = player.handSize,
                     cardWidth = 20.dp,
@@ -162,7 +162,7 @@ fun GameTable(
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 20.dp),
+                    .padding(end = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Avatar(
@@ -179,7 +179,7 @@ fun GameTable(
                     fontSize = 10.sp,
                     color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 OpponentHand(
                     count = player.handSize,
                     cardWidth = 20.dp,
