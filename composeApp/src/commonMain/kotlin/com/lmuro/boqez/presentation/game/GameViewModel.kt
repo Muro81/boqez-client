@@ -165,7 +165,12 @@ class GameViewModel(
                 currentPlayerId = data.nextPlayerId.orEmpty(),
                 scores = data.scores ?: it.scores,
                 trickNumber = 0,
-                hasCalledThisRound = false
+                hasCalledThisRound = false,
+                hand = if (data.userId == it.userId) {
+                    (it.hand - data.card).sortedWith(Card.tresetaComparator)
+                } else {
+                    it.hand
+                }
                 )
         }
         viewModelScope.launch {
