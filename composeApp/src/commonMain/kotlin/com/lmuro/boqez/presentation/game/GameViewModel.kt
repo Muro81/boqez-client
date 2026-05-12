@@ -123,6 +123,7 @@ class GameViewModel(
                     }
                     WebSocketMessageType.CALL_POINTS -> {
                         val data = Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
+                        Napier.d("CALL_POINTS received: userId=${data.userId}, myId=${state.value.userId}", tag = "GameViewModel")
                         calledCardsJob?.cancel()
                         state.update {
                             it.copy(

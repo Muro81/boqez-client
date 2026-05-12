@@ -81,6 +81,6 @@ data class GameState(
         }
 
     val canCallCards: Boolean
-        get() = isMyTurn && trickNumber == 0 && gameType == GameType.TRESETA &&
-                availableCallCombinations.isNotEmpty()
+        get() = isMyTurn && trickNumber == 0 && !hasCalledThisRound &&
+                gameType == GameType.TRESETA && availableCallCombinations.isNotEmpty()
 }
