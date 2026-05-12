@@ -146,9 +146,7 @@ class GameViewModel(
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
-                scores = it.scores + (data.scores?.mapValues { (teamId, points) ->
-                    (it.scores[teamId] ?: 0) + points
-                } ?: emptyMap())
+                scores = data.scores ?: it.scores
             )
         }
         //TODO show results of game finished, add option to play again
@@ -159,9 +157,7 @@ class GameViewModel(
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
                 currentPlayerId = data.nextPlayerId.orEmpty(),
-                scores = it.scores + (data.scores?.mapValues { (teamId, points) ->
-                    (it.scores[teamId] ?: 0) + points
-                } ?: emptyMap()),
+                scores = data.scores ?: it.scores,
                 trickNumber = 0,
                 hasCalledThisRound = false
                 )
