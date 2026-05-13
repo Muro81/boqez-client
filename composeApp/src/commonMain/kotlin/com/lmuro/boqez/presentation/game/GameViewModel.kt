@@ -264,7 +264,7 @@ class GameViewModel(
     }
 
     private fun sendGesture(gesture: Gesture) {
-        if(!state.value.isMyTurn) return
+        if(!state.value.canGesture) return
         viewModelScope.launch {
             repository.sendGesture(
                 gameId = state.value.roomCode,

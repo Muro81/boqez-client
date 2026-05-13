@@ -84,4 +84,14 @@ data class GameState(
     val canCallCards: Boolean
         get() = isMyTurn && trickNumber == 0 && !hasCalledThisRound &&
                 gameType == GameType.TRESETA && availableCallCombinations.isNotEmpty()
+
+    val canTresetaGesture = gameType == GameType.TRESETA &&
+            isMyTurn &&
+            tableCards.isEmpty()
+
+    val canBriscolaGesture: Boolean
+        get() = gameType == GameType.BRISKULA && trickNumber > 0
+
+    val canGesture: Boolean
+        get() = canTresetaGesture || canBriscolaGesture
 }

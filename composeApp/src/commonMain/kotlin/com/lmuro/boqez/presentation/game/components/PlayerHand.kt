@@ -20,6 +20,10 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.lmuro.boqez.core.utils.GameType
+import com.lmuro.boqez.core.utils.Gesture
+import com.lmuro.boqez.core.utils.Suit
+import com.lmuro.boqez.core.utils.briscolaGestureFor
 import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.theme.BoqezThemeProvider
@@ -27,9 +31,13 @@ import com.lmuro.boqez.theme.BoqezThemeProvider
 @Composable
 fun PlayerHand(
     cards: List<Card>,
+    gameType: GameType?,
+    trumpSuit: Suit?,
+    trickNumber: Int,
     cardWidth: Dp = 56.dp,
     tiltDegrees: Float = 6f,
-    onCardClick: (Card) -> Unit
+    onCardClick: (Card) -> Unit,
+    onGesture: (Gesture) -> Unit,
 ) {
     val count = cards.size
     val cardHeight = cardWidth * 1.4f
@@ -38,7 +46,7 @@ fun PlayerHand(
     Box(
         modifier = Modifier
             .width(cardWidth + cardWidth * 0.55f * (count - 1))
-            .height(cardHeight + 24.dp), // extra height for lift room
+            .height(cardHeight + 24.dp),
         contentAlignment = Alignment.BottomCenter,
     ) {
         cards.forEachIndexed { i, card ->
@@ -53,7 +61,15 @@ fun PlayerHand(
                 label = "lift_$i"
             )
 
+            // Briscola: show gesture button only on trump cards, not on first trick
+            val briscolaGesture = if (
+                gameType == GameType.BRISKULA &&
+                isSelected &&
+                trickNumber > 0
+            ) briscolaGestureFor(card, trumpSuit) else null
+
             Box(
+                contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
                     .offset(x = (offset * cardWidth.value * 0.55f).dp)
                     .rotate(rot)
@@ -80,6 +96,21 @@ fun PlayerHand(
                             shape = RoundedCornerShape(12.dp)
                         )
                 )
+
+                // Gesture button floats above lifted card
+                briscolaGesture?.let { gesture ->
+                    CardGestureButton(
+                        visible = isSelected,
+                        gesture = gesture,
+                        onClick = {
+                            onGesture(gesture)
+                            selectedIndex = null
+                        },
+                        modifier = Modifier
+                            .offset(y = (-28).dp)
+                            .zIndex(11f)
+                    )
+                }
             }
         }
     }

@@ -13,15 +13,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.presentation.base.BaseContentView
-import com.lmuro.boqez.presentation.game.components.Avatar
+import com.lmuro.boqez.presentation.game.components.AvatarWithGesturePopup
 import com.lmuro.boqez.presentation.game.components.CallCardsButton
 import com.lmuro.boqez.presentation.game.components.GameTable
 import com.lmuro.boqez.presentation.game.components.GameTopBar
@@ -36,6 +40,11 @@ fun GameScreen(
 ) {
     viewModel.snackBarChanel.ObserveWithLifecycle { showSnackBar(it) }
     val state by viewModel.stateFlow.collectAsState()
+    var showGesturePopup by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state.canTresetaGesture) {
+        if (!state.canTresetaGesture) showGesturePopup = false
+    }
 
     BaseContentView(state = state) {
         Column(
@@ -93,13 +102,21 @@ fun GameScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Avatar(
+                AvatarWithGesturePopup(
                     gesture = state.activeGestures[state.userId],
                     borderColor = if (state.isMyTurn)
                         BoqezThemeProvider.colors.goldLight
                     else
                         BoqezThemeProvider.colors.feltLight,
-                    pulse = state.isMyTurn
+                    pulse = state.isMyTurn,
+                    showPopup = showGesturePopup && state.canTresetaGesture,
+                    onAvatarClick = {
+                        if (state.canTresetaGesture) showGesturePopup = !showGesturePopup
+                    },
+                    onGesture = { gesture ->
+                        showGesturePopup = false
+                        viewModel.onEvent(GameEvent.OnGesture(gesture))
+                    }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -122,9 +139,11 @@ fun GameScreen(
             ) {
                 PlayerHand(
                     cards = state.hand,
-                    onCardClick = {
-                        viewModel.onEvent(GameEvent.OnPlayCard(it))
-                    }
+                    gameType = state.gameType,
+                    trumpSuit = state.trumpSuit,
+                    trickNumber = state.trickNumber,
+                    onCardClick = { viewModel.onEvent(GameEvent.OnPlayCard(it)) },
+                    onGesture = { viewModel.onEvent(GameEvent.OnGesture(it)) }
                 )
             }
 

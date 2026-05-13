@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
 enum class GameType(val gameName : String){
     BRISKULA("briskula"),
     TRESETA("treseta"),
-    TERCULJA("terculja")
+    TERCULJA("terculja"),
 }
 
 object GameTypeSerializer : KSerializer<GameType> {

@@ -234,3 +234,25 @@ fun Card.toDrawableResource(): DrawableResource {
         else            -> Res.drawable.img_king_spada
     }
 }
+
+fun briscolaGestureFor(card: Card, trumpSuit: Suit?): Gesture? {
+    if (card.suit != trumpSuit) return null
+    return when (card.rank) {
+        Rank.ACE    -> Gesture.ACE
+        Rank.THREE  -> Gesture.THREE
+        Rank.KING   -> Gesture.KING
+        Rank.KNIGHT -> Gesture.KNIGHT
+        Rank.JACK   -> Gesture.JACK
+        else        -> null
+    }
+}
+
+fun Gesture.emoji(): String = when (this) {
+    Gesture.ACE    -> "😗"
+    Gesture.THREE  -> "😉"
+    Gesture.KING   -> "🤨"
+    Gesture.KNIGHT -> "🤷"
+    Gesture.JACK   -> "😛"
+    Gesture.KNOCK  -> "✊"
+    Gesture.SLASH  -> "🤚"
+}
