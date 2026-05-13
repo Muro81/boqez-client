@@ -59,8 +59,6 @@ fun CalledCardsOverlay(
                         modifier = Modifier
                             .width(36.dp)
                             .height(50.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .border(1.dp, BoqezThemeProvider.colors.goldDark.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
                     )
                 }
             }

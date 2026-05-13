@@ -89,12 +89,6 @@ fun PlayerHand(
                     modifier = Modifier
                         .width(cardWidth)
                         .height(cardHeight)
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(
-                            width = 1.dp,
-                            color = BoqezThemeProvider.colors.goldDark.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(12.dp)
-                        )
                 )
 
                 // Gesture button floats above lifted card
