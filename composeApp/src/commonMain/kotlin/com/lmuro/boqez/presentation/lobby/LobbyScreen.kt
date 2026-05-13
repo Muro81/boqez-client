@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.lmuro.boqez.presentation.lobby
 
 import androidx.compose.foundation.background
@@ -22,7 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import boqez.composeapp.generated.resources.Res
 import boqez.composeapp.generated.resources.room_temp
@@ -53,6 +57,11 @@ fun LobbyScreen(
     viewModel.snackBarChanel.ObserveWithLifecycle {
         showSnackBar(it)
     }
+
+    BackHandler {
+        viewModel.onEvent(LobbyEvent.OnLeaveGame)
+    }
+
     val state by viewModel.stateFlow.collectAsState()
     val clipboardManager = koinInject<ClipboardManager>()
     val roomCodeCopied = stringResource(Res.string.room_code_copied)

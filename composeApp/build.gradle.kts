@@ -79,6 +79,7 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.material.icons.extended)
             implementation(libs.material.icons.core)
+            implementation(libs.compose.backhandler)
 
             //Koin
             implementation(libs.koin.core)
