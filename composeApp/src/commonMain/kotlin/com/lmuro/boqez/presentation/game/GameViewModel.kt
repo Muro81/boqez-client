@@ -6,13 +6,16 @@ import androidx.navigation.toRoute
 import com.lmuro.boqez.core.navigation.Screen
 import com.lmuro.boqez.core.navigation.utils.Navigator
 import com.lmuro.boqez.core.networking.onError
+import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.core.utils.WebSocketMessageType
 import com.lmuro.boqez.data.local.GameStateCache
 import com.lmuro.boqez.data.remote.dto.socket.SocketCallCardsResponse
+import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGestureResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketPlayCardResponse
+import com.lmuro.boqez.data.remote.mappers.toTeam
 import com.lmuro.boqez.data.remote.services.WSService
 import com.lmuro.boqez.domain.model.ActiveGesture
 import com.lmuro.boqez.domain.model.Card
@@ -75,6 +78,7 @@ class GameViewModel(
             GameEvent.OnLeaveGame -> TODO()
             is GameEvent.OnPlayCard -> playCard(event.card)
             is GameEvent.OnSwapCards -> TODO()
+            GameEvent.OnReady -> sendReady()
         }
     }
 
@@ -103,7 +107,7 @@ class GameViewModel(
                     WebSocketMessageType.FINISH_ROUND -> {
                         val data =
                             Json.decodeFromJsonElement<SocketPlayCardResponse>(message.payload)
-                        onRoundFinished(data)
+                        onRoundFinished(data, false)
                     }
 
                     WebSocketMessageType.FINISH_GAME -> {
@@ -111,19 +115,31 @@ class GameViewModel(
                             Json.decodeFromJsonElement<SocketPlayCardResponse>(message.payload)
                         onGameFinished(data)
                     }
+
+                    WebSocketMessageType.ROUND_DRAW -> {
+                        val data =
+                            Json.decodeFromJsonElement<SocketPlayCardResponse>(message.payload)
+                        onRoundFinished(data, true)
+                    }
+
                     WebSocketMessageType.GAME_DELETED -> {
                         viewModelScope.launch {
                             wsService.disconnect()
                             navigator.navigateTo(
                                 destination = Screen.HomeScreen
-                            ){
+                            ) {
                                 popUpTo<Screen.ROOT>()
                             }
                         }
                     }
+
                     WebSocketMessageType.CALL_POINTS -> {
-                        val data = Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
-                        Napier.d("CALL_POINTS received: userId=${data.userId}, myId=${state.value.userId}", tag = "GameViewModel")
+                        val data =
+                            Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
+                        Napier.d(
+                            "CALL_POINTS received: userId=${data.userId}, myId=${state.value.userId}",
+                            tag = "GameViewModel"
+                        )
                         calledCardsJob?.cancel()
                         state.update {
                             it.copy(
@@ -134,6 +150,36 @@ class GameViewModel(
                         calledCardsJob = viewModelScope.launch {
                             delay(3000)
                             state.update { it.copy(calledCards = null) }
+                        }
+                    }
+
+                    WebSocketMessageType.START_ROUND -> {
+                        val data = Json.decodeFromJsonElement<SocketGameStartResponse>(message.payload)
+                        val newTeams = data.teams.map { it.toTeam(state.value.userId, data.hand, gameType = data.gameType) }
+                        state.update {
+                            it.copy(
+                                hand = newTeams
+                                    .flatMap { team -> team.players }
+                                    .filterIsInstance<LocalPlayer>()
+                                    .firstOrNull()
+                                    ?.hand
+                                    ?.sortedWith(Card.tresetaComparator) ?: emptyList(),
+                                teams = newTeams,
+                                currentPlayerId = data.currentPlayerId,
+                                deck = data.deck,
+                                discardPile = data.discardPile,
+                                trumpSuit = data.trumpSuit,
+                                bottomCard = data.bottomCard,
+                                tableCards = emptyMap(),
+                                trickNumber = 0,
+                                hasCalledThisRound = false,
+                                showRoundEndOverlay = false,
+                                isRoundDraw = false,
+                                activeGestures = emptyMap(),
+                                calledCards = null,
+                                isTrickFinishing = false,
+                                isReady = false
+                            )
                         }
                     }
 
@@ -158,7 +204,7 @@ class GameViewModel(
         //TODO show results of game finished, add option to play again
     }
 
-    private fun onRoundFinished(data: SocketPlayCardResponse) {
+    private fun onRoundFinished(data: SocketPlayCardResponse, draw: Boolean) {
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
@@ -171,13 +217,15 @@ class GameViewModel(
                 } else {
                     it.hand
                 }
-                )
+            )
         }
         viewModelScope.launch {
             delay(1500)
             state.update {
                 it.copy(
-                    tableCards = emptyMap()
+                    tableCards = emptyMap(),
+                    showRoundEndOverlay = true,
+                    isRoundDraw = draw
                 )
             }
         }
@@ -223,28 +271,30 @@ class GameViewModel(
     }
 
     private fun onCardPlayed(data: SocketPlayCardResponse) {
-        state.update { it.copy(
-            tableCards = it.tableCards + (data.userId to data.card),
-            currentPlayerId = data.nextPlayerId.orEmpty(),
-            hand = if (data.userId == it.userId) {
-                (it.hand - data.card).sortedWith(Card.tresetaComparator)
-            } else {
-                it.hand
-            },
-            teams = if (data.userId != it.userId) {
-                it.teams.map { team ->
-                    team.copy(
-                        players = team.players.map { player ->
-                            if (player.playerId == data.userId && player is OpponentPlayer) {
-                                player.copy(handSize = player.handSize - 1)
-                            } else player
-                        }
-                    )
+        state.update {
+            it.copy(
+                tableCards = it.tableCards + (data.userId to data.card),
+                currentPlayerId = data.nextPlayerId.orEmpty(),
+                hand = if (data.userId == it.userId) {
+                    (it.hand - data.card).sortedWith(Card.tresetaComparator)
+                } else {
+                    it.hand
+                },
+                teams = if (data.userId != it.userId) {
+                    it.teams.map { team ->
+                        team.copy(
+                            players = team.players.map { player ->
+                                if (player.playerId == data.userId && player is OpponentPlayer) {
+                                    player.copy(handSize = player.handSize - 1)
+                                } else player
+                            }
+                        )
+                    }
+                } else {
+                    it.teams
                 }
-            } else {
-                it.teams
-            }
-        )}
+            )
+        }
     }
 
     private fun showGesture(userId: String, gesture: Gesture) {
@@ -264,7 +314,7 @@ class GameViewModel(
     }
 
     private fun sendGesture(gesture: Gesture) {
-        if(!state.value.canGesture) return
+        if (!state.value.canGesture) return
         viewModelScope.launch {
             repository.sendGesture(
                 gameId = state.value.roomCode,
@@ -277,13 +327,13 @@ class GameViewModel(
     }
 
     private fun playCard(card: Card) {
-        if(!state.value.isMyTurn) return
-        if(state.value.isTrickFinishing) return
-        if(state.value.gameType == GameType.TRESETA){
+        if (!state.value.isMyTurn) return
+        if (state.value.isTrickFinishing) return
+        if (state.value.gameType == GameType.TRESETA) {
             val leadSuit = state.value.tableCards.values.firstOrNull()?.suit
-            if(leadSuit != null && card.suit != leadSuit){
-                val hasSuit = state.value.hand.any{ it.suit == leadSuit }
-                if(hasSuit){
+            if (leadSuit != null && card.suit != leadSuit) {
+                val hasSuit = state.value.hand.any { it.suit == leadSuit }
+                if (hasSuit) {
                     viewModelScope.launch {
                         _snackBarChannel.send("You must play a $leadSuit card.")
                     }
@@ -318,6 +368,23 @@ class GameViewModel(
         }
     }
 
+    private fun sendReady(){
+        if(state.value.isReady) return
+        viewModelScope.launch {
+            repository.sendReady(gameId = state.value.roomCode)
+                .onSuccess{
+                    state.update {
+                        it.copy(
+                            isReady = true
+                        )
+                    }
+                }.onError { networkError, message ->
+                    val decide = message ?: networkError.toString()
+                    _snackBarChannel.send(decide)
+
+                }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

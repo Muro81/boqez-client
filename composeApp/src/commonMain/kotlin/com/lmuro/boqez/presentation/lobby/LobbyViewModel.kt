@@ -192,7 +192,7 @@ class LobbyViewModel(
                         viewModelScope.launch {
                             val gameData = GameStartData(
                                 gameType = data.gameType,
-                                teams = data.teams.map { it.toTeam(state.value.userId, data.hand) },
+                                teams = data.teams.map { it.toTeam(state.value.userId, data.hand, gameType = data.gameType) },
                                 currentPlayerId = data.currentPlayerId,
                                 deck = data.deck,
                                 discardPile = data.discardPile,

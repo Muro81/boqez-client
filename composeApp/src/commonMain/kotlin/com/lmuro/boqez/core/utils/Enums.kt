@@ -185,7 +185,8 @@ enum class WebSocketMessageType(val message : String){
     SWAP_CARD("swap_card"),
     PLAYER_DISCONNECTED("player_disconnect"),
     GESTURE("gesture"),
-    GAME_DELETED("game_deleted")
+    GAME_DELETED("game_deleted"),
+    ROUND_DRAW("round_draw")
 }
 
 enum class TablePosition{

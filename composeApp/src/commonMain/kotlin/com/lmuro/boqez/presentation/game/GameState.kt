@@ -22,12 +22,15 @@ data class GameState(
     val tableCards: Map<String, Card> = emptyMap(),
     val roomCode: String = "",
     val activeGestures: Map<String, ActiveGesture> = emptyMap(),
-    val bottomCard : Card? = null,
-    val scores : Map<Int,Int> = emptyMap(),
-    val trickNumber : Int = 0,
-    val hasCalledThisRound : Boolean = false,
-    val isTrickFinishing : Boolean = false,
+    val bottomCard: Card? = null,
+    val scores: Map<Int, Int> = emptyMap(),
+    val trickNumber: Int = 0,
+    val hasCalledThisRound: Boolean = false,
+    val isTrickFinishing: Boolean = false,
     val calledCards: Pair<String, List<Card>>? = null,
+    val showRoundEndOverlay: Boolean = false,
+    val isRoundDraw: Boolean = false,
+    val isReady : Boolean = false,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {
 

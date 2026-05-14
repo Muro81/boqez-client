@@ -7,6 +7,7 @@ import com.lmuro.boqez.data.remote.dto.requests.AuthRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.CardsListRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeGameTypeRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.ChangeTeamRequestDto
+import com.lmuro.boqez.data.remote.dto.requests.GameWrapperRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.GestureRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyCreateRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.LobbyWrapperRequestDto
@@ -114,6 +115,13 @@ class ApiService(
     suspend fun callPoints(body : CardsListRequestDto) : Resource<Any, NetworkError,String?>{
         return post(
             "/api/game/call-points",
+            body = body
+        )
+    }
+
+    suspend fun sendReady(body : GameWrapperRequestDto) : Resource<Any, NetworkError,String?>{
+        return post(
+            "/api/game/ready",
             body = body
         )
     }
