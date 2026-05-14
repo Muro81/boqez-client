@@ -41,6 +41,7 @@ fun GameTable(
     gameType : GameType?,
     calledCards: Pair<String, List<Card>>?,
     userId: String,
+    disconnectedPlayers: Map<String, Int>,
     modifier: Modifier = Modifier
 ) {
     val topPlayer = positionedPlayers.find { it.position == TablePosition.TOP }
@@ -98,6 +99,7 @@ fun GameTable(
         topPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
             val isCurrentPlayer = positioned.player.playerId == currentPlayerId
+            val disconnectedSeconds = disconnectedPlayers[positioned.player.playerId]
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -106,20 +108,28 @@ fun GameTable(
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = if (isCurrentPlayer)
+                    borderColor = if (disconnectedSeconds != null)
+                        BoqezThemeProvider.colors.inkWarmDim
+                    else if (isCurrentPlayer)
                         BoqezThemeProvider.colors.goldLight
                     else
                         BoqezThemeProvider.colors.feltLight,
-                    pulse = isCurrentPlayer
+                    pulse = isCurrentPlayer && disconnectedSeconds == null
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = positioned.player.username,
                     fontSize = 10.sp,
-                    color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
+                    color = BoqezThemeProvider.colors.white.copy(
+                        alpha = if (disconnectedSeconds != null) 0.4f else 0.7f
+                    )
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                if (disconnectedSeconds != null) {
+                    DisconnectedBadge(secondsLeft = disconnectedSeconds)
+                } else {
+                    OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                }
             }
         }
 
@@ -127,6 +137,7 @@ fun GameTable(
         leftPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
             val isCurrentPlayer = positioned.player.playerId == currentPlayerId
+            val disconnectedSeconds = disconnectedPlayers[positioned.player.playerId]
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -135,25 +146,28 @@ fun GameTable(
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = if (isCurrentPlayer)
+                    borderColor = if (disconnectedSeconds != null)
+                        BoqezThemeProvider.colors.inkWarmDim
+                    else if (isCurrentPlayer)
                         BoqezThemeProvider.colors.goldLight
                     else
-                        BoqezThemeProvider.colors.crimsonBase,
-                    pulse = isCurrentPlayer
+                        BoqezThemeProvider.colors.feltLight,
+                    pulse = isCurrentPlayer && disconnectedSeconds == null
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = positioned.player.username,
                     fontSize = 10.sp,
-                    color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
+                    color = BoqezThemeProvider.colors.white.copy(
+                        alpha = if (disconnectedSeconds != null) 0.4f else 0.7f
+                    )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                OpponentHand(
-                    count = player.handSize,
-                    cardWidth = 20.dp,
-                    vertical = true,
-                    flipLift = false
-                )
+                if (disconnectedSeconds != null) {
+                    DisconnectedBadge(secondsLeft = disconnectedSeconds)
+                } else {
+                    OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                }
             }
         }
 
@@ -161,6 +175,7 @@ fun GameTable(
         rightPlayer?.let { positioned ->
             val player = positioned.player as OpponentPlayer
             val isCurrentPlayer = positioned.player.playerId == currentPlayerId
+            val disconnectedSeconds = disconnectedPlayers[positioned.player.playerId]
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -169,25 +184,28 @@ fun GameTable(
             ) {
                 Avatar(
                     gesture = activeGestures[positioned.player.playerId],
-                    borderColor = if (isCurrentPlayer)
+                    borderColor = if (disconnectedSeconds != null)
+                        BoqezThemeProvider.colors.inkWarmDim
+                    else if (isCurrentPlayer)
                         BoqezThemeProvider.colors.goldLight
                     else
-                        BoqezThemeProvider.colors.crimsonBase,
-                    pulse = isCurrentPlayer
+                        BoqezThemeProvider.colors.feltLight,
+                    pulse = isCurrentPlayer && disconnectedSeconds == null
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = positioned.player.username,
                     fontSize = 10.sp,
-                    color = BoqezThemeProvider.colors.white.copy(alpha = 0.7f)
+                    color = BoqezThemeProvider.colors.white.copy(
+                        alpha = if (disconnectedSeconds != null) 0.4f else 0.7f
+                    )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                OpponentHand(
-                    count = player.handSize,
-                    cardWidth = 20.dp,
-                    vertical = true,
-                    flipLift = true
-                )
+                if (disconnectedSeconds != null) {
+                    DisconnectedBadge(secondsLeft = disconnectedSeconds)
+                } else {
+                    OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                }
             }
         }
 

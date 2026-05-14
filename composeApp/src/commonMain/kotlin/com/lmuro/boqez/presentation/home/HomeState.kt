@@ -7,5 +7,7 @@ data class HomeState(
     val username : String = "",
     val userId : String = "",
     val shouldShowLobbyDialog : Boolean = false,
-    val lobbyCode : String = ""
+    val lobbyCode : String = "",
+    val showRejoinDialog: Boolean = false,
+    val pendingGameId: String = ""
 ) : BaseState(isLoading)

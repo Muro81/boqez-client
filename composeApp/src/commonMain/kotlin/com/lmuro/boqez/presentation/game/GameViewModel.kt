@@ -10,11 +10,14 @@ import com.lmuro.boqez.core.networking.onSuccess
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.core.utils.WebSocketMessageType
+import com.lmuro.boqez.data.local.DataStoreApi
+import com.lmuro.boqez.data.local.DataStorePreferenceKeys.Companion.ACTIVE_GAME_ID
 import com.lmuro.boqez.data.local.GameStateCache
 import com.lmuro.boqez.data.remote.dto.socket.SocketCallCardsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGestureResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketPlayCardResponse
+import com.lmuro.boqez.data.remote.dto.socket.SocketUserResponse
 import com.lmuro.boqez.data.remote.mappers.toTeam
 import com.lmuro.boqez.data.remote.services.WSService
 import com.lmuro.boqez.domain.model.ActiveGesture
@@ -30,12 +33,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlin.time.Duration.Companion.seconds
 
 class GameViewModel(
     gameStateCache: GameStateCache,
     private val repository: BoqezRepository,
     private val wsService: WSService,
     private val navigator: Navigator,
+    private val dataStoreApi: DataStoreApi,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<GameState, GameEvent>() {
 
@@ -43,6 +48,7 @@ class GameViewModel(
 
     private val gestureJobs = mutableMapOf<String, Job>()
     private var calledCardsJob: Job? = null
+    private val disconnectCountdownJobs = mutableMapOf<String, Job>()
 
     init {
         val args = savedStateHandle.toRoute<Screen.GameScreen>()
@@ -68,6 +74,9 @@ class GameViewModel(
                 )
             }
         }
+        viewModelScope.launch {
+           dataStoreApi.update(ACTIVE_GAME_ID,args.gameId)
+        }
         observeMessages()
     }
 
@@ -75,7 +84,9 @@ class GameViewModel(
         when (event) {
             GameEvent.OnCallCards -> callPoints()
             is GameEvent.OnGesture -> sendGesture(event.gesture)
-            GameEvent.OnLeaveGame -> TODO()
+            GameEvent.OnLeaveGame -> state.update { it.copy(showLeaveConfirm = true) }
+            GameEvent.OnLeaveGameDismiss -> state.update { it.copy(showLeaveConfirm = false) }
+            GameEvent.OnLeaveGameConfirm -> leaveGame()
             is GameEvent.OnPlayCard -> playCard(event.card)
             is GameEvent.OnSwapCards -> TODO()
             GameEvent.OnReady -> sendReady()
@@ -124,6 +135,7 @@ class GameViewModel(
 
                     WebSocketMessageType.GAME_DELETED -> {
                         viewModelScope.launch {
+                            dataStoreApi.delete(ACTIVE_GAME_ID)
                             wsService.disconnect()
                             navigator.navigateTo(
                                 destination = Screen.HomeScreen
@@ -179,6 +191,16 @@ class GameViewModel(
                         }
                     }
 
+                    WebSocketMessageType.PLAYER_DISCONNECTED -> {
+                        val data = Json.decodeFromJsonElement<SocketUserResponse>(message.payload)
+                        onPlayerDisconnected(data.userId)
+                    }
+
+                    WebSocketMessageType.PLAYER_RECONNECTED -> {
+                        val data = Json.decodeFromJsonElement<SocketUserResponse>(message.payload)
+                        onPlayerReconnected(data.userId)
+                    }
+
                     else -> Napier.v("Unhandled socket message.")
                 }
             }
@@ -196,6 +218,9 @@ class GameViewModel(
                     it.hand
                 }
             )
+        }
+        viewModelScope.launch {
+            dataStoreApi.delete(ACTIVE_GAME_ID)
         }
         //TODO show results of game finished, add option to play again
     }
@@ -382,10 +407,48 @@ class GameViewModel(
         }
     }
 
+    private fun onPlayerDisconnected(userId: String) {
+        disconnectCountdownJobs[userId]?.cancel()
+        state.update {
+            it.copy(disconnectedPlayers = it.disconnectedPlayers + (userId to 60))
+        }
+        disconnectCountdownJobs[userId] = viewModelScope.launch {
+            for (secondsLeft in 59 downTo 0) {
+                delay(1.seconds)
+                state.update {
+                    it.copy(disconnectedPlayers = it.disconnectedPlayers + (userId to secondsLeft))
+                }
+            }
+            disconnectCountdownJobs.remove(userId)
+        }
+    }
+
+    private fun onPlayerReconnected(userId: String) {
+        disconnectCountdownJobs[userId]?.cancel()
+        disconnectCountdownJobs.remove(userId)
+        state.update {
+            it.copy(disconnectedPlayers = it.disconnectedPlayers - userId)
+        }
+    }
+
+    private fun leaveGame() {
+        viewModelScope.launch {
+            repository.leaveGame(gameId = state.value.roomCode)
+                .onError { networkError, message ->
+                    val decide = message ?: networkError.toString()
+                    _snackBarChannel.send(decide)
+                }
+            // Navigation handled by GAME_DELETED message the server broadcasts
+            state.update { it.copy(showLeaveConfirm = false) }
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         gestureJobs.values.forEach { it.cancel() }
         gestureJobs.clear()
+        disconnectCountdownJobs.values.forEach { it.cancel() }
+        disconnectCountdownJobs.clear()
     }
 
 }

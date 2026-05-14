@@ -11,4 +11,6 @@ sealed class HomeEvent : BaseEvent {
     data object OnLobbyCreate : HomeEvent()
     data object OnLobbyJoin : HomeEvent()
     data object OnDissmissDialog : HomeEvent()
+    object OnRejoinGame : HomeEvent()
+    object OnDismissRejoin : HomeEvent()
 }

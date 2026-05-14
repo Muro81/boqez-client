@@ -31,6 +31,8 @@ data class GameState(
     val showRoundEndOverlay: Boolean = false,
     val isRoundDraw: Boolean = false,
     val isReady : Boolean = false,
+    val disconnectedPlayers: Map<String, Int> = emptyMap(),
+    val showLeaveConfirm: Boolean = false,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {
 

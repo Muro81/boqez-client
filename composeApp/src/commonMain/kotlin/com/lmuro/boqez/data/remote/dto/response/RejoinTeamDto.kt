@@ -1,0 +1,11 @@
+package com.lmuro.boqez.data.remote.dto.response
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data class RejoinTeamDto(
+    @SerialName("team_id") val teamId: Int,
+    @SerialName("players") val players: List<RejoinPlayerDto>
+)

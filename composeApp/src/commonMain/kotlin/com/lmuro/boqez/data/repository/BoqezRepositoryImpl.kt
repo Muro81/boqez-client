@@ -18,11 +18,13 @@ import com.lmuro.boqez.data.remote.dto.requests.ReadyStatusRequestDto
 import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.mappers.toAuth
 import com.lmuro.boqez.data.remote.mappers.toJoinLobby
+import com.lmuro.boqez.data.remote.mappers.toRejoin
 import com.lmuro.boqez.data.remote.mappers.toUserInfo
 import com.lmuro.boqez.data.remote.services.ApiService
 import com.lmuro.boqez.domain.model.Auth
 import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.domain.model.LobbyJoin
+import com.lmuro.boqez.domain.model.Rejoin
 import com.lmuro.boqez.domain.model.UserInfo
 import com.lmuro.boqez.domain.repository.BoqezRepository
 
@@ -189,5 +191,17 @@ class BoqezRepositoryImpl(
         return apiService.sendReady(
             body = GameWrapperRequestDto(gameId = gameId)
         )
+    }
+
+    override suspend fun leaveGame(gameId: String): Resource<Any, NetworkError, String?> {
+        return apiService.leaveGame(
+            body = GameWrapperRequestDto(gameId = gameId)
+        )
+    }
+
+    override suspend fun rejoinGame(currentUserId: String): Resource<Rejoin, NetworkError, String?> {
+        return apiService.rejoinGame().map {
+            it.data.toRejoin(currentUserId)
+        }
     }
 }

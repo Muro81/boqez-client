@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lmuro.boqez.core.utils.ObserveWithLifecycle
 import com.lmuro.boqez.presentation.base.BaseContentView
+import com.lmuro.boqez.presentation.components.PrimaryButton
 import com.lmuro.boqez.presentation.game.components.AvatarWithGesturePopup
 import com.lmuro.boqez.presentation.game.components.CallCardsButton
 import com.lmuro.boqez.presentation.game.components.GameTable
@@ -72,6 +78,7 @@ fun GameScreen(
                     gameType = state.gameType,
                     userId = state.userId,
                     calledCards = state.calledCards,
+                    disconnectedPlayers = state.disconnectedPlayers,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -159,6 +166,64 @@ fun GameScreen(
                     isReady = state.isReady,
                     onReady = { viewModel.onEvent(GameEvent.OnReady) }
                 )
+            }
+
+            if (state.showLeaveConfirm) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(BoqezThemeProvider.colors.inkWarm.copy(alpha = 0.6f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(BoqezThemeProvider.colors.parchment)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "LEAVE GAME",
+                            style = BoqezThemeProvider.typography.cinzelBold14,
+                            color = BoqezThemeProvider.colors.crimsonBase
+                        )
+                        Text(
+                            text = "Leaving will end the game for all players.",
+                            style = BoqezThemeProvider.typography.garamondItalic12,
+                            color = BoqezThemeProvider.colors.inkWarmDim,
+                            textAlign = TextAlign.Center
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = { viewModel.onEvent(GameEvent.OnLeaveGameDismiss) },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = "Cancel",
+                                    style = BoqezThemeProvider.typography.cinzelBold14,
+                                    color = BoqezThemeProvider.colors.inkWarm
+                                )
+                            }
+                            PrimaryButton(
+                                onClick = { viewModel.onEvent(GameEvent.OnLeaveGameConfirm) },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = "Leave",
+                                    style = BoqezThemeProvider.typography.cinzelBold14,
+                                    color = BoqezThemeProvider.colors.goldLight
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
         }

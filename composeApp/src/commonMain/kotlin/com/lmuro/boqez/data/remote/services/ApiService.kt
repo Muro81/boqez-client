@@ -17,6 +17,7 @@ import com.lmuro.boqez.data.remote.dto.requests.RegisterRequestDto
 import com.lmuro.boqez.data.remote.dto.response.AuthResponseDto
 import com.lmuro.boqez.data.remote.dto.response.IdWrapperResponse
 import com.lmuro.boqez.data.remote.dto.response.LobbyJoinResponseDto
+import com.lmuro.boqez.data.remote.dto.response.RejoinGameResponseDto
 import com.lmuro.boqez.data.remote.dto.response.UserInfoResponseDto
 import io.ktor.client.HttpClient
 
@@ -123,6 +124,18 @@ class ApiService(
         return post(
             "/api/game/ready",
             body = body
+        )
+    }
+    suspend fun leaveGame(body : GameWrapperRequestDto) : Resource<Any, NetworkError,String?>{
+        return post(
+            "/api/game/leave",
+            body = body
+        )
+    }
+
+    suspend fun rejoinGame() : Resource<DataResponse<RejoinGameResponseDto>, NetworkError,String?>{
+        return get(
+            "/api/game/rejoin"
         )
     }
 }

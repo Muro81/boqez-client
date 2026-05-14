@@ -14,23 +14,36 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.seconds
 
 class WSService(
     private val client: HttpClient
 ){
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var session : WebSocketSession? = null
+    private var currentUserId: String? = null
+    private var isIntentionalDisconnect = false
+
     private val _messages = MutableSharedFlow<WebSocketMessage>()
     val messages : SharedFlow<WebSocketMessage> = _messages.asSharedFlow()
 
 
     fun connect(userId: String) {
+        currentUserId = userId
+        isIntentionalDisconnect = false
         scope.launch {
+            tryConnect(userId)
+        }
+    }
+
+    private suspend fun tryConnect(userId: String) {
+        try {
             client.webSocket("${BuildKonfig.WS_URL}/ws?userId=$userId") {
                 session = this
                 Napier.d("WebSocket connected!", tag = "WSService")
@@ -53,16 +66,24 @@ class WSService(
                     session = null
                 }
             }
+        } catch (e: Exception) {
+            Napier.e("WebSocket connection failed: ${e.message}", tag = "WSService")
+        }
+
+        // Auto-reconnect if not intentional disconnect
+        if (!isIntentionalDisconnect) {
+            Napier.d("WebSocket disconnected, reconnecting in 2s...", tag = "WSService")
+            delay(2.seconds)
+            if (!isIntentionalDisconnect) {
+                tryConnect(userId)
+            }
         }
     }
 
     suspend fun disconnect() {
+        isIntentionalDisconnect = true
         session?.close(CloseReason(CloseReason.Codes.NORMAL, "Client disconnecting"))
         session = null
+        currentUserId = null
     }
-
-    suspend fun sendMessage(message: WebSocketMessage) {
-        session?.send(Frame.Text(Json.encodeToString(WebSocketMessage.serializer(), message)))
-    }
-
 }

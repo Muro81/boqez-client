@@ -7,6 +7,7 @@ import com.lmuro.boqez.core.utils.Gesture
 import com.lmuro.boqez.domain.model.Auth
 import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.domain.model.LobbyJoin
+import com.lmuro.boqez.domain.model.Rejoin
 import com.lmuro.boqez.domain.model.UserInfo
 
 interface BoqezRepository {
@@ -55,6 +56,10 @@ interface BoqezRepository {
     suspend fun callPoints(gameId : String, cards : List<Card>) : Resource<Any, NetworkError, String?>
 
     suspend fun sendReady(gameId : String) : Resource<Any, NetworkError, String?>
+
+    suspend fun leaveGame(gameId : String) : Resource<Any, NetworkError, String?>
+
+    suspend fun rejoinGame(currentUserId : String) : Resource<Rejoin, NetworkError,String?>
 }
 
 

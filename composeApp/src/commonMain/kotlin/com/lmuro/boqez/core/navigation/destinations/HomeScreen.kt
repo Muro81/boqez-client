@@ -1,6 +1,5 @@
 package com.lmuro.boqez.core.navigation.destinations
 
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.lmuro.boqez.core.navigation.Screen
