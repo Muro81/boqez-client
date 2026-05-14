@@ -41,7 +41,7 @@ class HomeViewModel(
                 val code = event.code.take(LOBBY_CODE_LENGTH)
                 state.update {
                     it.copy(
-                        lobbyCode = code
+                        lobbyCode = code.uppercase()
                     )
                 }
             }
