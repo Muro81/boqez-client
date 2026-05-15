@@ -166,7 +166,7 @@ fun GameTable(
                 if (disconnectedSeconds != null) {
                     DisconnectedBadge(secondsLeft = disconnectedSeconds)
                 } else {
-                    OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                    OpponentHand(count = player.handSize, cardWidth = 20.dp,vertical = true)
                 }
             }
         }
@@ -204,7 +204,7 @@ fun GameTable(
                 if (disconnectedSeconds != null) {
                     DisconnectedBadge(secondsLeft = disconnectedSeconds)
                 } else {
-                    OpponentHand(count = player.handSize, cardWidth = 20.dp)
+                    OpponentHand(count = player.handSize, cardWidth = 20.dp,vertical = true,flipLift = true)
                 }
             }
         }
