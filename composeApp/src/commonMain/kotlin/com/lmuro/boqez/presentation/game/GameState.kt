@@ -38,6 +38,9 @@ data class GameState(
     val revealedTeammateHand: Pair<String, List<Card>>? = null,
     val teammateCardPoints: Int? = null,
     val showTeammateHand : Boolean = false,
+    val showGameResultOverlay: Boolean = false,
+    val isPlayAgainReady: Boolean = false,
+    val winnerTeamId: Int? = null,
     override val isLoading: Boolean = false,
 ) : BaseState(isLoading) {
 

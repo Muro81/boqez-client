@@ -16,6 +16,7 @@ import com.lmuro.boqez.data.local.GameStateCache
 import com.lmuro.boqez.data.remote.dto.socket.SocketCallCardsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGestureResponse
+import com.lmuro.boqez.data.remote.dto.socket.SocketPlayAgainResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketPlayCardResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketShowHandsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketUserResponse
@@ -96,8 +97,9 @@ class GameViewModel(
             GameEvent.OnDeckClick -> {
                 if (state.value.dealerPeekCard != null) showDealerPeekCard()
             }
-
             GameEvent.OnDismissTeammateHand -> state.update { it.copy(showTeammateHand = false) }
+            GameEvent.OnPlayAgain -> playAgain()
+            GameEvent.OnDismissGameResult -> state.update { it.copy(showGameResultOverlay = false) }
         }
     }
 
@@ -232,6 +234,24 @@ class GameViewModel(
                         onPlayerReconnected(data.userId)
                     }
 
+                    WebSocketMessageType.PLAY_AGAIN -> {
+                        val data = Json.decodeFromJsonElement<SocketPlayAgainResponse>(message.payload)
+                        navigator.navigateTo(
+                            destination = Screen.LobbyScreen(
+                                lobbyId = data.lobbyId,
+                                userId = state.value.userId,
+                                ownerId = data.ownerId,
+                                username = state.value.teams
+                                    .flatMap { it.players }
+                                    .firstOrNull { it.playerId == state.value.userId }
+                                    ?.username ?: "",
+                                gameType = state.value.gameType
+                            )
+                        ) {
+                            popUpTo<Screen.ROOT>()
+                        }
+                    }
+
                     else -> Napier.v("Unhandled socket message.")
                 }
             }
@@ -247,13 +267,20 @@ class GameViewModel(
                     (it.hand - data.card).sortedWith(Card.tresetaComparator)
                 } else {
                     it.hand
-                }
+                },
+                winnerTeamId = data.scores?.maxByOrNull { it.value }?.key
             )
         }
         viewModelScope.launch {
             dataStoreApi.delete(ACTIVE_GAME_ID)
+            delay(1500)
+            state.update {
+                it.copy(
+                    tableCards = emptyMap(),
+                    showGameResultOverlay = true
+                )
+            }
         }
-        //TODO show results of game finished, add option to play again
     }
 
     private fun onRoundFinished(data: SocketPlayCardResponse, draw: Boolean) {
@@ -476,6 +503,19 @@ class GameViewModel(
                 }
             // Navigation handled by GAME_DELETED message the server broadcasts
             state.update { it.copy(showLeaveConfirm = false) }
+        }
+    }
+
+    private fun playAgain(){
+        if (state.value.isPlayAgainReady) return
+        viewModelScope.launch {
+            repository.playAgain(gameId = state.value.roomCode)
+                .onSuccess {
+                    state.update { it.copy(isPlayAgainReady = true) }
+                }.onError { networkError, message ->
+                    val decide = message ?: networkError.toString()
+                    _snackBarChannel.send(decide)
+                }
         }
     }
 

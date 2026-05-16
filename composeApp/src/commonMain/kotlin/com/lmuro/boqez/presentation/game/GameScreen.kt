@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +31,7 @@ import com.lmuro.boqez.presentation.base.BaseContentView
 import com.lmuro.boqez.presentation.components.PrimaryButton
 import com.lmuro.boqez.presentation.game.components.AvatarWithGesturePopup
 import com.lmuro.boqez.presentation.game.components.CallCardsButton
+import com.lmuro.boqez.presentation.game.components.GameResultOverlay
 import com.lmuro.boqez.presentation.game.components.GameTable
 import com.lmuro.boqez.presentation.game.components.GameTopBar
 import com.lmuro.boqez.presentation.game.components.LastDrawOverlay
@@ -242,6 +241,17 @@ fun GameScreen(
                     cards = teammateHand.second,
                     teamPoints = state.teammateCardPoints ?: 0,
                     onDismiss = { viewModel.onEvent(GameEvent.OnDismissTeammateHand) }
+                )
+            }
+
+            if (state.showGameResultOverlay) {
+                GameResultOverlay(
+                    teams = state.teams,
+                    scores = state.scores,
+                    winnerTeamId = state.winnerTeamId,
+                    isPlayAgainReady = state.isPlayAgainReady,
+                    onPlayAgain = { viewModel.onEvent(GameEvent.OnPlayAgain) },
+                    onLeave = { viewModel.onEvent(GameEvent.OnLeaveGameConfirm) }
                 )
             }
 

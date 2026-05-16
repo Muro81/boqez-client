@@ -15,4 +15,6 @@ sealed class GameEvent : BaseEvent {
     data object OnLeaveGameDismiss : GameEvent()
     data object OnDeckClick : GameEvent()
     data object OnDismissTeammateHand : GameEvent()
+    data object OnPlayAgain : GameEvent()
+    data object OnDismissGameResult : GameEvent()
 }
