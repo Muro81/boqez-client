@@ -110,16 +110,6 @@ fun HomeScreen(
                     style = BoqezThemeProvider.typography.cinzelBold16
                 )
             }
-
-//            PrimaryButton(
-//                onClick = {
-//                    viewModel.onEvent(HomeEvent.OnAboutUsClick)
-//                }
-//            ) {
-//                Text(
-//                    text = "ABOUT US"
-//                )
-//            }
             Spacer(Modifier.weight(1f))
         }
         IconButton(
