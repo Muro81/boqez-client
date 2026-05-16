@@ -11,6 +11,7 @@ sealed class GameEvent : BaseEvent {
     data object OnCallCards : GameEvent()
     data class OnSwapCards(val cardsToSwap : List<Card>) : GameEvent()
     data object OnReady : GameEvent()
-    object OnLeaveGameConfirm : GameEvent()
-    object OnLeaveGameDismiss : GameEvent()
+    data object OnLeaveGameConfirm : GameEvent()
+    data object OnLeaveGameDismiss : GameEvent()
+    data object OnDeckClick : GameEvent()
 }

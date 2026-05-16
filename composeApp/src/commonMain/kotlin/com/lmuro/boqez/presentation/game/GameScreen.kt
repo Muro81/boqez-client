@@ -79,7 +79,12 @@ fun GameScreen(
                     userId = state.userId,
                     calledCards = state.calledCards,
                     disconnectedPlayers = state.disconnectedPlayers,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    dealerPeekCard = state.dealerPeekCard,
+                    showDealerPeek = state.showDealerPeek,
+                    onDeckClick = {
+                        viewModel.onEvent(GameEvent.OnDeckClick)
+                    },
                 )
 
                 // Turn indicator

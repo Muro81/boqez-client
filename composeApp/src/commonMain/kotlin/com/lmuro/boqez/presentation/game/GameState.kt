@@ -33,6 +33,8 @@ data class GameState(
     val isReady : Boolean = false,
     val disconnectedPlayers: Map<String, Int> = emptyMap(),
     val showLeaveConfirm: Boolean = false,
+    val dealerPeekCard : Card? = null,
+    val showDealerPeek: Boolean = false,
     override val isLoading: Boolean = false
 ) : BaseState(isLoading) {
 

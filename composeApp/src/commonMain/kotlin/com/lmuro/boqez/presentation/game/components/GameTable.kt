@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lmuro.boqez.core.utils.GameType
 import com.lmuro.boqez.core.utils.TablePosition
+import com.lmuro.boqez.core.utils.noRippleClickable
 import com.lmuro.boqez.domain.model.ActiveGesture
 import com.lmuro.boqez.domain.model.Card
 import com.lmuro.boqez.domain.model.OpponentPlayer
@@ -42,7 +43,10 @@ fun GameTable(
     calledCards: Pair<String, List<Card>>?,
     userId: String,
     disconnectedPlayers: Map<String, Int>,
-    modifier: Modifier = Modifier
+    dealerPeekCard : Card?,
+    showDealerPeek : Boolean,
+    modifier: Modifier = Modifier,
+    onDeckClick : () -> Unit
 ) {
     val topPlayer = positionedPlayers.find { it.position == TablePosition.TOP }
     val leftPlayer = positionedPlayers.find { it.position == TablePosition.LEFT }
@@ -249,6 +253,26 @@ fun GameTable(
                 callerUsername = callerUsername,
                 modifier = Modifier.align(Alignment.Center)
             )
+        }
+
+        if (showDealerPeek && dealerPeekCard != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(BoqezThemeProvider.colors.inkWarm.copy(alpha = 0.6f))
+                    .noRippleClickable(onDeckClick),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Card above trump",
+                        style = BoqezThemeProvider.typography.garamondItalic12,
+                        color = BoqezThemeProvider.colors.goldLight
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CardFace(card = dealerPeekCard)
+                }
+            }
         }
     }
 }

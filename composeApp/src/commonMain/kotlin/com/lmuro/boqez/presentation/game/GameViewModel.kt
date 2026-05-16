@@ -70,13 +70,15 @@ class GameViewModel(
                     discardPile = start.discardPile,
                     trumpSuit = start.trumpSuit,
                     bottomCard = start.bottomCard,
-                    roomCode = args.gameId
+                    roomCode = args.gameId,
+                    dealerPeekCard = start.dealerPeekCard
                 )
             }
         }
         viewModelScope.launch {
            dataStoreApi.update(ACTIVE_GAME_ID,args.gameId)
         }
+        if (gameStartState?.dealerPeekCard != null) showDealerPeekCard()
         observeMessages()
     }
 
@@ -90,6 +92,9 @@ class GameViewModel(
             is GameEvent.OnPlayCard -> playCard(event.card)
             is GameEvent.OnSwapCards -> TODO()
             GameEvent.OnReady -> sendReady()
+            GameEvent.OnDeckClick -> {
+                if(state.value.dealerPeekCard != null) showDealerPeekCard()
+            }
         }
     }
 
@@ -186,9 +191,11 @@ class GameViewModel(
                                 activeGestures = emptyMap(),
                                 calledCards = null,
                                 isTrickFinishing = false,
-                                isReady = false
+                                isReady = false,
+                                dealerPeekCard = data.dealerPeekCard
                             )
                         }
+                        if (data.dealerPeekCard != null) showDealerPeekCard()
                     }
 
                     WebSocketMessageType.PLAYER_DISCONNECTED -> {
@@ -441,6 +448,14 @@ class GameViewModel(
                 }
             // Navigation handled by GAME_DELETED message the server broadcasts
             state.update { it.copy(showLeaveConfirm = false) }
+        }
+    }
+
+    private fun showDealerPeekCard(){
+        state.update { it.copy(showDealerPeek = true) }
+        viewModelScope.launch {
+            delay(3000)
+            state.update { it.copy(showDealerPeek = false) }
         }
     }
 

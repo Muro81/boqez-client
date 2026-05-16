@@ -11,7 +11,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CardFace(
     card : Card,
-    modifier : Modifier
+    modifier : Modifier = Modifier
 ){
     Image(
         painter = painterResource(card.toDrawableResource()),

@@ -197,7 +197,8 @@ class LobbyViewModel(
                                 deck = data.deck,
                                 discardPile = data.discardPile,
                                 trumpSuit = data.trumpSuit,
-                                bottomCard = data.bottomCard
+                                bottomCard = data.bottomCard,
+                                dealerPeekCard = data.dealerPeekCard
                             )
                             gameStateCache.put(data.gameId, gameData)
                             navigator.navigateTo(

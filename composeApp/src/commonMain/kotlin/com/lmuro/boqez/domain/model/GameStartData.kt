@@ -10,5 +10,6 @@ data class GameStartData(
     val deck: List<Card>,
     val discardPile: List<Card>,
     val trumpSuit: Suit?,
-    val bottomCard : Card?
+    val bottomCard : Card?,
+    val dealerPeekCard : Card?
 )
