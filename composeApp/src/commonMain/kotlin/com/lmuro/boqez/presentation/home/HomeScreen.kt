@@ -56,64 +56,6 @@ fun HomeScreen(
     BaseContentView(
         state = state
     ) {
-        if (state.showRejoinDialog) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(BoqezThemeProvider.colors.inkWarm.copy(alpha = 0.6f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 32.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(BoqezThemeProvider.colors.parchment)
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "REJOIN GAME",
-                        style = BoqezThemeProvider.typography.cinzelBold14,
-                        color = BoqezThemeProvider.colors.crimsonBase,
-                    )
-                    Text(
-                        text = "You have an active game in progress. Would you like to rejoin?",
-                        style = BoqezThemeProvider.typography.garamondItalic12,
-                        color = BoqezThemeProvider.colors.inkWarmDim,
-                        textAlign = TextAlign.Center
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        OutlinedButton(
-                            onClick = { viewModel.onEvent(HomeEvent.OnDismissRejoin) },
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = "Abandon",
-                                style = BoqezThemeProvider.typography.cinzelBold14,
-                                color = BoqezThemeProvider.colors.inkWarm
-                            )
-                        }
-                        PrimaryButton(
-                            onClick = { viewModel.onEvent(HomeEvent.OnRejoinGame) },
-                            shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = "Rejoin",
-                                style = BoqezThemeProvider.typography.cinzelBold14,
-                                color = BoqezThemeProvider.colors.goldLight
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
         LobbyPickerDialog(
             shouldShow = state.shouldShowLobbyDialog,
             lobbyCode = state.lobbyCode,
@@ -130,6 +72,10 @@ fun HomeScreen(
                 viewModel.onEvent(HomeEvent.OnDissmissDialog)
             }
         )
+
+
+
+
         Column(
             modifier = Modifier
                 .background(BoqezThemeProvider.colors.parchment)
@@ -193,6 +139,64 @@ fun HomeScreen(
                 contentDescription = null,
                 tint = BoqezThemeProvider.colors.goldLight
             )
+        }
+
+        if (state.showRejoinDialog) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(BoqezThemeProvider.colors.inkWarm.copy(alpha = 0.6f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(BoqezThemeProvider.colors.parchment)
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "REJOIN GAME",
+                        style = BoqezThemeProvider.typography.cinzelBold14,
+                        color = BoqezThemeProvider.colors.crimsonBase,
+                    )
+                    Text(
+                        text = "You have an active game in progress. Would you like to rejoin?",
+                        style = BoqezThemeProvider.typography.garamondItalic12,
+                        color = BoqezThemeProvider.colors.inkWarmDim,
+                        textAlign = TextAlign.Center
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = { viewModel.onEvent(HomeEvent.OnDismissRejoin) },
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = "Abandon",
+                                style = BoqezThemeProvider.typography.cinzelBold14,
+                                color = BoqezThemeProvider.colors.inkWarm
+                            )
+                        }
+                        PrimaryButton(
+                            onClick = { viewModel.onEvent(HomeEvent.OnRejoinGame) },
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = "Rejoin",
+                                style = BoqezThemeProvider.typography.cinzelBold14,
+                                color = BoqezThemeProvider.colors.goldLight
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
