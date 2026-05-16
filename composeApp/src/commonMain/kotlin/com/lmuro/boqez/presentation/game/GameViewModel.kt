@@ -328,9 +328,19 @@ class GameViewModel(
                 teams = it.teams.map { team ->
                     team.copy(
                         players = team.players.map { player ->
-                            if (player.playerId == data.userId && player is OpponentPlayer) {
-                                val delta = if (isBriskula && deckNotEmpty) 0 else -1
-                                player.copy(handSize = player.handSize + delta)
+                            if (player is OpponentPlayer) {
+                                when {
+                                    player.playerId == data.userId -> {
+                                        // played last card: -1 for play, +1 for draw = 0 net in briskula, -1 in others
+                                        val delta = if (isBriskula && data.drawnCard != null) 0 else -1
+                                        player.copy(handSize = player.handSize + delta)
+                                    }
+                                    data.drawnCard != null && isBriskula -> {
+                                        // other opponents draw back in briskula
+                                        player.copy(handSize = player.handSize + 1)
+                                    }
+                                    else -> player
+                                }
                             } else player
                         }
                     )
