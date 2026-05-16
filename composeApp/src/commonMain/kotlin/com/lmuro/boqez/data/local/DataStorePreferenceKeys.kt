@@ -10,5 +10,6 @@ class DataStorePreferenceKeys {
         val DEVICE_NAME = stringPreferencesKey("DEVICE_NAME")
         val DEVICE_ID = stringPreferencesKey("DEVICE_ID")
         val ACTIVE_GAME_ID = stringPreferencesKey("ACTIVE_GAME_ID")
+        val USER_ID = stringPreferencesKey("USER_ID")
     }
 }

@@ -22,36 +22,22 @@ class HomeViewModel(
     private val gameStateCache: GameStateCache,
 ) : BaseViewModel<HomeState, HomeEvent>() {
     override val initialState: HomeState = HomeState()
+
     override fun onEvent(event: HomeEvent) {
         when (event) {
             HomeEvent.OnAboutUsClick -> TODO()
             HomeEvent.OnPlayClick -> {
-                state.update {
-                    it.copy(
-                        shouldShowLobbyDialog = true
-                    )
-                }
+                state.update { it.copy(shouldShowLobbyDialog = true) }
             }
-
             HomeEvent.OnProfileClick -> TODO()
             HomeEvent.OnSettingsClick -> TODO()
             HomeEvent.OnDissmissDialog -> {
-                state.update {
-                    it.copy(
-                        shouldShowLobbyDialog = false
-                    )
-                }
+                state.update { it.copy(shouldShowLobbyDialog = false) }
             }
-
             is HomeEvent.OnLobbyCodeChanged -> {
                 val code = event.code.take(LOBBY_CODE_LENGTH)
-                state.update {
-                    it.copy(
-                        lobbyCode = code.uppercase()
-                    )
-                }
+                state.update { it.copy(lobbyCode = code.uppercase()) }
             }
-
             HomeEvent.OnLobbyCreate -> createLobby()
             HomeEvent.OnLobbyJoin -> joinLobby()
             HomeEvent.OnRejoinGame -> rejoinGame()
@@ -62,28 +48,37 @@ class HomeViewModel(
                 state.update { it.copy(showRejoinDialog = false, pendingGameId = "") }
             }
         }
-
     }
 
     init {
-        loadUserData()
-        checkForActiveGame()
+        viewModelScope.launch {
+            loadUserData()
+            checkForActiveGame()
+        }
     }
 
-    private fun loadUserData() {
-        viewModelScope.launch {
-            repository.getUser()
-                .onSuccess { res ->
-                    state.update {
-                        it.copy(
-                            username = res.username,
-                            userId = res.userId
-                        )
-                    }
-                }.onError { error, message ->
-                    val decide = message ?: error.toString()
-                    _snackBarChannel.send(decide)
+    private suspend fun loadUserData() {
+        repository.getUser()
+            .onSuccess { res ->
+                state.update {
+                    it.copy(
+                        username = res.username,
+                        userId = res.userId
+                    )
                 }
+            }.onError { error, message ->
+                val decide = message ?: error.toString()
+                _snackBarChannel.send(decide)
+            }
+    }
+
+    private suspend fun checkForActiveGame() {
+        val gameId = dataStoreApi.read(ACTIVE_GAME_ID) ?: return
+        state.update {
+            it.copy(
+                showRejoinDialog = true,
+                pendingGameId = gameId
+            )
         }
     }
 
@@ -134,18 +129,6 @@ class HomeViewModel(
         }
     }
 
-    private fun checkForActiveGame() {
-        viewModelScope.launch {
-            val gameId = dataStoreApi.read(ACTIVE_GAME_ID) ?: return@launch
-            state.update {
-                it.copy(
-                    showRejoinDialog = true,
-                    pendingGameId = gameId
-                )
-            }
-        }
-    }
-
     private fun rejoinGame() {
         viewModelScope.launch {
             state.update { it.copy(isLoading = true) }
@@ -158,7 +141,8 @@ class HomeViewModel(
                         deck = data.deck,
                         discardPile = data.discardPile,
                         trumpSuit = data.trumpSuit,
-                        bottomCard = data.bottomCard
+                        bottomCard = data.bottomCard,
+                        dealerPeekCard = null
                     )
                     gameStateCache.put(data.gameId, gameData)
                     navigator.navigateTo(
