@@ -253,28 +253,29 @@ class GameViewModel(
     }
 
     private fun onTrickFinished(data: SocketPlayCardResponse) {
-        //TODO visual for who won the trick
+        //TODO visual for who won the trick and card drawing
+        val isBriskula = state.value.gameType == GameType.BRISKULA
+        val deckNotEmpty = state.value.deck.isNotEmpty()
+
         state.update {
             it.copy(
                 tableCards = it.tableCards + (data.userId to data.card),
                 currentPlayerId = data.nextPlayerId.orEmpty(),
-                hand = if (data.userId == it.userId) {
-                    (it.hand - data.card).sortedWith(Card.tresetaComparator)
-                } else {
-                    it.hand
+                deck = if (isBriskula) it.deck.dropLast(4) else it.deck,
+                hand = run {
+                    val handAfterPlay = if (data.userId == it.userId) it.hand - data.card else it.hand
+                    if (data.drawnCard != null) (handAfterPlay + data.drawnCard).sortedWith(Card.tresetaComparator)
+                    else handAfterPlay.sortedWith(Card.tresetaComparator)
                 },
-                teams = if (data.userId != it.userId) {
-                    it.teams.map { team ->
-                        team.copy(
-                            players = team.players.map { player ->
-                                if (player.playerId == data.userId && player is OpponentPlayer) {
-                                    player.copy(handSize = player.handSize - 1)
-                                } else player
-                            }
-                        )
-                    }
-                } else {
-                    it.teams
+                teams = it.teams.map { team ->
+                    team.copy(
+                        players = team.players.map { player ->
+                            if (player.playerId == data.userId && player is OpponentPlayer) {
+                                val delta = if (isBriskula && deckNotEmpty) 0 else -1
+                                player.copy(handSize = player.handSize + delta)
+                            } else player
+                        }
+                    )
                 },
                 trickNumber = it.trickNumber + 1,
                 isTrickFinishing = true

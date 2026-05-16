@@ -9,5 +9,6 @@ data class SocketPlayCardResponse(
     @SerialName("card") val card: Card,
     @SerialName("user_id") val userId : String,
     @SerialName("next_player_id") val nextPlayerId : String?,// send next player id on trick finished/unfinished
-    @SerialName("scores") val scores : Map<Int,Int>? //send scores on round and game complete
+    @SerialName("scores") val scores : Map<Int,Int>?, //send scores on round and game complete
+    @SerialName("drawn_card") val drawnCard : Card?
 )
