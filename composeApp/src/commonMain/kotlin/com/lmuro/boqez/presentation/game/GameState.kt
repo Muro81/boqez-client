@@ -27,7 +27,7 @@ data class GameState(
     val trickNumber: Int = 0,
     val hasCalledThisRound: Boolean = false,
     val isTrickFinishing: Boolean = false,
-    val calledCards: Pair<String, List<Card>>? = null,
+    val calledCards: Map<String, List<List<Card>>> = emptyMap(),
     val showRoundEndOverlay: Boolean = false,
     val isRoundDraw: Boolean = false,
     val isReady : Boolean = false,

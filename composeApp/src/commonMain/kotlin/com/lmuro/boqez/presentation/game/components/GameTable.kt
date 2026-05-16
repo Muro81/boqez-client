@@ -40,7 +40,7 @@ fun GameTable(
     activeGestures: Map<String, ActiveGesture>,
     currentPlayerId: String,
     gameType : GameType?,
-    calledCards: Pair<String, List<Card>>?,
+    calledCards: Map<String, List<List<Card>>>,
     userId: String,
     disconnectedPlayers: Map<String, Int>,
     dealerPeekCard : Card?,
@@ -243,13 +243,14 @@ fun GameTable(
                 .padding(bottom = 8.dp)
         )
 
-        calledCards?.let {
+        calledCards.entries.forEach { (callerId, combos) ->
             val callerUsername = positionedPlayers
-                .firstOrNull { p -> p.player.playerId == it.first }
-                ?.player?.username ?: "Opponent"
+                .firstOrNull { p -> p.player.playerId == callerId }
+                ?.player?.username ?: "You"
             CalledCardsOverlay(
-                calledCards = it,
-                currentUserId = userId,
+                userId = callerId,
+                combos = combos,
+                currentUserId = userId, // this is the GameTable parameter — the local player's id
                 callerUsername = callerUsername,
                 modifier = Modifier.align(Alignment.Center)
             )

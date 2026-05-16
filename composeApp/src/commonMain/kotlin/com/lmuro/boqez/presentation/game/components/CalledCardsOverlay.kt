@@ -22,12 +22,12 @@ import com.lmuro.boqez.theme.BoqezThemeProvider
 
 @Composable
 fun CalledCardsOverlay(
-    calledCards: Pair<String, List<Card>>,
+    userId: String,
+    combos: List<List<Card>>,
     currentUserId: String,
-    callerUsername : String,
+    callerUsername: String,
     modifier: Modifier = Modifier
 ) {
-    val (userId, cards) = calledCards
     val isMe = userId == currentUserId
 
     Box(
@@ -49,17 +49,17 @@ fun CalledCardsOverlay(
                 style = BoqezThemeProvider.typography.cinzelBold14,
                 color = BoqezThemeProvider.colors.goldLight,
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                cards.forEach { card ->
-                    CardFace(
-                        card = card,
-                        modifier = Modifier
-                            .width(36.dp)
-                            .height(50.dp)
-                    )
+            combos.forEach { combo ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    combo.forEach { card ->
+                        CardFace(
+                            card = card,
+                            modifier = Modifier.width(36.dp).height(50.dp)
+                        )
+                    }
                 }
             }
         }

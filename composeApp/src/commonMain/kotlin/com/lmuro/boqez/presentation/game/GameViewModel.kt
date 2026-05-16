@@ -49,7 +49,6 @@ class GameViewModel(
     override val initialState: GameState = GameState()
 
     private val gestureJobs = mutableMapOf<String, Job>()
-    private var calledCardsJob: Job? = null
     private val disconnectCountdownJobs = mutableMapOf<String, Job>()
 
     init {
@@ -168,18 +167,17 @@ class GameViewModel(
                     }
 
                     WebSocketMessageType.CALL_POINTS -> {
-                        val data =
-                            Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
-                        calledCardsJob?.cancel()
+                        val data = Json.decodeFromJsonElement<SocketCallCardsResponse>(message.payload)
                         state.update {
+                            val existing = it.calledCards[data.userId] ?: emptyList()
                             it.copy(
-                                calledCards = Pair(data.userId, data.cards),
+                                calledCards = it.calledCards + (data.userId to existing + listOf(data.cards)),
                                 hasCalledThisRound = if (data.userId == it.userId) true else it.hasCalledThisRound
                             )
                         }
-                        calledCardsJob = viewModelScope.launch {
+                        viewModelScope.launch {
                             delay(3000)
-                            state.update { it.copy(calledCards = null) }
+                            state.update { it.copy(calledCards = it.calledCards - data.userId) }
                         }
                     }
 
@@ -213,7 +211,7 @@ class GameViewModel(
                                 showRoundEndOverlay = false,
                                 isRoundDraw = false,
                                 activeGestures = emptyMap(),
-                                calledCards = null,
+                                calledCards = emptyMap(),
                                 isTrickFinishing = false,
                                 isReady = false,
                                 dealerPeekCard = data.dealerPeekCard,
