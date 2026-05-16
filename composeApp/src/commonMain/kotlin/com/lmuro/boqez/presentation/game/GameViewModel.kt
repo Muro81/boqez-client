@@ -266,7 +266,7 @@ class GameViewModel(
                 } else {
                     it.hand
                 },
-                winnerTeamId = data.scores?.maxByOrNull { it.value }?.key
+                winnerTeamId = data.scores?.maxByOrNull { score -> score.value }?.key
             )
         }
         viewModelScope.launch {
