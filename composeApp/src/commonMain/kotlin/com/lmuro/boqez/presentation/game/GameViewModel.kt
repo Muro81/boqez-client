@@ -302,7 +302,8 @@ class GameViewModel(
                 it.copy(
                     tableCards = emptyMap(),
                     showRoundEndOverlay = true,
-                    isRoundDraw = draw
+                    isRoundDraw = draw,
+                    isReady = false
                 )
             }
         }
