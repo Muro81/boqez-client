@@ -204,4 +204,10 @@ class BoqezRepositoryImpl(
             it.data.toRejoin(currentUserId)
         }
     }
+
+    override suspend fun playAgain(gameId: String): Resource<Any, NetworkError, String?> {
+        return apiService.playAgain(
+            body = GameWrapperRequestDto(gameId = gameId)
+        )
+    }
 }

@@ -138,4 +138,11 @@ class ApiService(
             "/api/game/rejoin"
         )
     }
+
+    suspend fun playAgain(body : GameWrapperRequestDto) : Resource<Any, NetworkError,String?>{
+        return post(
+            "/api/game/play-again",
+            body = body
+        )
+    }
 }

@@ -60,6 +60,8 @@ interface BoqezRepository {
     suspend fun leaveGame(gameId : String) : Resource<Any, NetworkError, String?>
 
     suspend fun rejoinGame(currentUserId : String) : Resource<Rejoin, NetworkError,String?>
+
+    suspend fun playAgain(gameId : String) : Resource<Any, NetworkError,String?>
 }
 
 
