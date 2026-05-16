@@ -12,5 +12,6 @@ data class Rejoin(
     val discardPile: List<Card>,
     val trumpSuit: Suit?,
     val bottomCard: Card?,
-    val hand: List<Card>
+    val hand: List<Card>,
+    val dealerPeekCard : Card?
 )

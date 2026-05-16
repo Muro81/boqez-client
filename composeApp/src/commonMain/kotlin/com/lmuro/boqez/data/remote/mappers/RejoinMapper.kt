@@ -19,7 +19,8 @@ fun RejoinGameResponseDto.toRejoin(currentUserId: String) = Rejoin(
     discardPile = discardPile,
     trumpSuit = trumpSuit,
     bottomCard = bottomCard,
-    hand = hand
+    hand = hand,
+    dealerPeekCard = dealerPeekCard
 )
 
 fun RejoinTeamDto.toTeam(currentUserId: String, hand: List<Card>, gameType: GameType) = Team(

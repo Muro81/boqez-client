@@ -142,7 +142,7 @@ class HomeViewModel(
                         discardPile = data.discardPile,
                         trumpSuit = data.trumpSuit,
                         bottomCard = data.bottomCard,
-                        dealerPeekCard = null
+                        dealerPeekCard = data.dealerPeekCard
                     )
                     gameStateCache.put(data.gameId, gameData)
                     navigator.navigateTo(

@@ -16,5 +16,6 @@ data class RejoinGameResponseDto(
     @SerialName("discard_pile") val discardPile: List<Card>,
     @SerialName("trump_suit") val trumpSuit: Suit?,
     @SerialName("bottom_card") val bottomCard: Card?,
-    @SerialName("hand") val hand: List<Card>
+    @SerialName("hand") val hand: List<Card>,
+    @SerialName("dealer_peek_card") val dealerPeekCard : Card?
 )
