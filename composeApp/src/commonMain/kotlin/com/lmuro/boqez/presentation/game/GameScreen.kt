@@ -35,6 +35,7 @@ import com.lmuro.boqez.presentation.game.components.AvatarWithGesturePopup
 import com.lmuro.boqez.presentation.game.components.CallCardsButton
 import com.lmuro.boqez.presentation.game.components.GameTable
 import com.lmuro.boqez.presentation.game.components.GameTopBar
+import com.lmuro.boqez.presentation.game.components.LastDrawOverlay
 import com.lmuro.boqez.presentation.game.components.PlayerHand
 import com.lmuro.boqez.presentation.game.components.RoundEndOverlay
 import com.lmuro.boqez.theme.BoqezThemeProvider
@@ -229,6 +230,19 @@ fun GameScreen(
                         }
                     }
                 }
+            }
+            val teammateHand = state.revealedTeammateHand
+            if (state.showTeammateHand && teammateHand != null) {
+                val teammateUsername = state.teams.flatMap { it.players }
+                    .firstOrNull { it.playerId == teammateHand.first }
+                    ?.username ?: "Teammate"
+
+                LastDrawOverlay(
+                    teammateUsername = teammateUsername,
+                    cards = teammateHand.second,
+                    teamPoints = state.teammateCardPoints ?: 0,
+                    onDismiss = { viewModel.onEvent(GameEvent.OnDismissTeammateHand) }
+                )
             }
 
         }

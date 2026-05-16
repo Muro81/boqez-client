@@ -35,7 +35,10 @@ data class GameState(
     val showLeaveConfirm: Boolean = false,
     val dealerPeekCard : Card? = null,
     val showDealerPeek: Boolean = false,
-    override val isLoading: Boolean = false
+    val revealedTeammateHand: Pair<String, List<Card>>? = null,
+    val teammateCardPoints: Int? = null,
+    val showTeammateHand : Boolean = false,
+    override val isLoading: Boolean = false,
 ) : BaseState(isLoading) {
 
     val positionedPlayers: List<PositionedPlayer>

@@ -17,6 +17,7 @@ import com.lmuro.boqez.data.remote.dto.socket.SocketCallCardsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGameStartResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketGestureResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketPlayCardResponse
+import com.lmuro.boqez.data.remote.dto.socket.SocketShowHandsResponse
 import com.lmuro.boqez.data.remote.dto.socket.SocketUserResponse
 import com.lmuro.boqez.data.remote.mappers.toTeam
 import com.lmuro.boqez.data.remote.services.WSService
@@ -76,7 +77,7 @@ class GameViewModel(
             }
         }
         viewModelScope.launch {
-           dataStoreApi.update(ACTIVE_GAME_ID,args.gameId)
+            dataStoreApi.update(ACTIVE_GAME_ID, args.gameId)
         }
         if (gameStartState?.dealerPeekCard != null) showDealerPeekCard()
         observeMessages()
@@ -93,8 +94,10 @@ class GameViewModel(
             is GameEvent.OnSwapCards -> TODO()
             GameEvent.OnReady -> sendReady()
             GameEvent.OnDeckClick -> {
-                if(state.value.dealerPeekCard != null) showDealerPeekCard()
+                if (state.value.dealerPeekCard != null) showDealerPeekCard()
             }
+
+            GameEvent.OnDismissTeammateHand -> state.update { it.copy(showTeammateHand = false) }
         }
     }
 
@@ -118,6 +121,18 @@ class GameViewModel(
                         val data =
                             Json.decodeFromJsonElement<SocketPlayCardResponse>(message.payload)
                         onTrickFinished(data)
+                    }
+
+                    WebSocketMessageType.SHOW_HANDS -> {
+                        val data =
+                            Json.decodeFromJsonElement<SocketShowHandsResponse>(message.payload)
+                        state.update {
+                            it.copy(
+                                revealedTeammateHand = Pair(data.userId, data.cards),
+                                teammateCardPoints = data.teamPoints,
+                                showTeammateHand = true
+                            )
+                        }
                     }
 
                     WebSocketMessageType.FINISH_ROUND -> {
@@ -167,8 +182,15 @@ class GameViewModel(
                     }
 
                     WebSocketMessageType.START_ROUND -> {
-                        val data = Json.decodeFromJsonElement<SocketGameStartResponse>(message.payload)
-                        val newTeams = data.teams.map { it.toTeam(state.value.userId, data.hand, gameType = data.gameType) }
+                        val data =
+                            Json.decodeFromJsonElement<SocketGameStartResponse>(message.payload)
+                        val newTeams = data.teams.map {
+                            it.toTeam(
+                                state.value.userId,
+                                data.hand,
+                                gameType = data.gameType
+                            )
+                        }
                         state.update {
                             it.copy(
                                 hand = newTeams
@@ -192,7 +214,9 @@ class GameViewModel(
                                 calledCards = null,
                                 isTrickFinishing = false,
                                 isReady = false,
-                                dealerPeekCard = data.dealerPeekCard
+                                dealerPeekCard = data.dealerPeekCard,
+                                revealedTeammateHand = null,
+                                teammateCardPoints = null,
                             )
                         }
                         if (data.dealerPeekCard != null) showDealerPeekCard()
@@ -270,7 +294,8 @@ class GameViewModel(
                 currentPlayerId = data.nextPlayerId.orEmpty(),
                 deck = if (isBriskula) it.deck.dropLast(4) else it.deck,
                 hand = run {
-                    val handAfterPlay = if (data.userId == it.userId) it.hand - data.card else it.hand
+                    val handAfterPlay =
+                        if (data.userId == it.userId) it.hand - data.card else it.hand
                     if (data.drawnCard != null) (handAfterPlay + data.drawnCard).sortedWith(Card.tresetaComparator)
                     else handAfterPlay.sortedWith(Card.tresetaComparator)
                 },
@@ -288,6 +313,9 @@ class GameViewModel(
                 isTrickFinishing = true
             )
         }
+
+        clearBottomCardIfNeeded()
+
         viewModelScope.launch {
             delay(1500)
             state.update {
@@ -397,11 +425,11 @@ class GameViewModel(
         }
     }
 
-    private fun sendReady(){
-        if(state.value.isReady) return
+    private fun sendReady() {
+        if (state.value.isReady) return
         viewModelScope.launch {
             repository.sendReady(gameId = state.value.roomCode)
-                .onSuccess{
+                .onSuccess {
                     state.update {
                         it.copy(
                             isReady = true
@@ -451,11 +479,19 @@ class GameViewModel(
         }
     }
 
-    private fun showDealerPeekCard(){
+    private fun showDealerPeekCard() {
         state.update { it.copy(showDealerPeek = true) }
         viewModelScope.launch {
             delay(3000)
             state.update { it.copy(showDealerPeek = false) }
+        }
+    }
+
+    private fun clearBottomCardIfNeeded() {
+        state.update {
+            it.copy(
+                bottomCard = if (it.deck.isEmpty()) null else it.bottomCard
+            )
         }
     }
 
